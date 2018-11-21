@@ -44,7 +44,7 @@ render () {
 
 shouldComponentUpdate 这个方法用来判断是否需要调用 render 方法重新描绘 dom。因为 dom 的描绘非常消耗性能，如果我们能在 shouldComponentUpdate 方法中能够写出更优化的 dom diff 算法，可以极大的提高性能。
 
-参考[react 性能优化-sf](https//segmentfault.com/a/1190000006254212)
+参考：[react 性能优化-sf](https://segmentfault.com/a/1190000006254212)
 
 ### 为什么虚拟 dom 会提高性能?(必考)
 
@@ -52,7 +52,7 @@ shouldComponentUpdate 这个方法用来判断是否需要调用 render 方法�
 
 用 JavaScript 对象结构表示 DOM 树的结构；然后用这个树构建一个真正的 DOM 树，插到文档当中当状态变更的时候，重新构造一棵新的对象树。然后用新的树和旧的树进行比较，记录两棵树差异把 2 所记录的差异应用到步骤 1 所构建的真正的 DOM 树上，视图就更新了。
 
-参考 [如何理解虚拟 DOM?-zhihu](https://www.zhihu.com/question/29504639?sort=created)
+参考：[如何理解虚拟 DOM?-zhihu](https://www.zhihu.com/question/29504639?sort=created)
 
 ### react diff 原理（常考，大厂必考）
 
