@@ -1,3 +1,5 @@
+### JavaScript 面向对象深入理解
+请参考文章：[JavaScript 面向对象深入理解](https://buptsteve.github.io/blog/2016/03/17/005.js-oo-chapter6/)
 ### JavaScript判断this指向
 现在我们可以根据优先级来判断函数在某个调用位置应用的是哪条规则。可以按照下面的顺序来进行判断：
 1. 函数是否在new中调用(new绑定)?如果是的话this绑定的是新创建的对象。
@@ -217,7 +219,7 @@ Function.prototype.myCall = function (context) {
 
 请参考：[从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理](https://juejin.im/post/5a6547d0f265da3e283a1df7)
 
-### 前端跨域解决方案总结
+### 前端跨域方法总结
 
 请参考：[前端跨域方法总结](https://juejin.im/post/5bcc297c51882535074a695e)、[前端常见跨域解决方案（全）](https://segmentfault.com/a/1190000011145364)
 
