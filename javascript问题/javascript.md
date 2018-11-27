@@ -144,135 +144,373 @@ JavaScript 变量声明提升：
 -   引用数据类型在栈中存储了指针，该指针指向堆中该实体的起始地址。
 -   当解释器寻找引用值时，会首先检索其在栈中的地址，取得地址后从堆中获得实体。
 
-### JavaScript 如何实现一个类，怎么实例化这个类？
+### javascript 创建对象的几种方式？
 
-1. 构造函数法（this + prototype） -- 用 new 关键字 生成实例对象
-    - 缺点：用到了 this 和 prototype，编写复杂，可读性差
-
-```
-  function Mobile(name, price){
-     this.name = name;
-     this.price = price;
-   }
-   Mobile.prototype.sell = function(){
-      alert(this.name + "，售价 $" + this.price);
-   }
-   var iPhone7 = new Mobile("iPhone7", 1000);
-   iPhone7.sell();
-```
-
-2. Object.create 法 -- 用 Object.create() 生成实例对象
-    - 缺点：不能实现私有属性和私有方法，实例对象之间也不能共享数据
+1. 工厂模式
 
 ```
- var Person = {
-     firstname: "Mark",
-     lastname: "Yun",
-     age: 25,
-     introduce: function(){
-         alert('I am ' + Person.firstname + ' ' + Person.lastname);
-     }
- };
+function createPerson(name, age, job) {
+  var o = {
+    name: name,
+    age : age,
+    job : job,
 
- var person = Object.create(Person);
- person.introduce();
+    sayName: function() {
+      alert(this.name);
+    }
+  };
 
- // Object.create 要求 IE9+，低版本浏览器可以自行部署：
- if (!Object.create) {
-　   Object.create = function (o) {
-　　　 function F() {}
-　　　 F.prototype = o;
-　　　 return new F();
-　　};
-　}
+  return o;
+}
+
+var person1 = createPerson("steve", 24, "fe");
+var person2 = createPerson("young", 25, "fs");
 ```
+问题：没有解决对象识别的问题（即怎样知道一个对象的类型），重复构造相同的方法造成内存浪费，也无法进行继承复用。
 
-3. 极简主义法（消除 this 和 prototype） -- 调用 createNew() 得到实例对象
-    - 优点：容易理解，结构清晰优雅，符合传统的"面向对象编程"的构造
+2. 构造函数模式
 
 ```
- var Cat = {
-   age: 3, // 共享数据 -- 定义在类对象内，createNew() 外
-   createNew: function () {
-     var cat = {};
-     // var cat = Animal.createNew(); // 继承 Animal 类
-     cat.name = "小咪";
-     var sound = "喵喵喵"; // 私有属性--定义在 createNew() 内，输出对象外
-     cat.makeSound = function () {
-       alert(sound);  // 暴露私有属性
-     };
-     cat.changeAge = function(num){
-       Cat.age = num; // 修改共享数据
-     };
-     return cat; // 输出对象
-   }
- };
+function Person(name, age, job) {
+  this.name = name;
+  this.age  = age;
+  this.job  = job;
 
- var cat = Cat.createNew();
- cat.makeSound();
-```
+  this.sayName = function() {
+    alert(this.name);
+  };
+}
 
-4. ES6 语法糖 class -- 用 new 关键字 生成实例对象
+var person1 = new Person("steve", 24, "fe");
+var person2 = new Person("young", 25, "fs");
+
+alert(person1.constructor === Person); // true
+alert(person2.constructor === Person); // true
 
 ```
-     class Point {
-       constructor(x, y) {
-         this.x = x;
-         this.y = y;
-       }
-       toString() {
-         return '(' + this.x + ', ' + this.y + ')';
-       }
-     }
+问题：每个方法有独立的内存，造成浪费。
 
-  var point = new Point(2, 3);
+3. 原型模式
+
 ```
+function Person() {}
+
+// 属性
+Person.prototype.name = "steve";
+Person.prototype.age  = 24;
+Person.prototype.job  = "Web Developer";
+
+// 方法
+Person.prototype.sayName = function() {
+  alert(this.name);
+};
+
+var person1 = new Person();
+person1.sayName(); // steve
+
+var person2 = new Person();
+person2.sayName(); // steve
+
+alert(person1.sayName === person2.sayName); // true 共享同一个方法
+```
+问题：无法为实例生成单独的属性。
+
+4. 组合使用构造函数模式和原型模式
+
+- 构造函数用于定义实例属性
+- 原型模式用于定义共享的属性和方法
+
+```
+function Person(name, age, job) {
+  this.name    = name;
+  this.age     = age;
+  this.job     = job;
+  this.friends = ["shirley", "jame"];
+}
+
+Person.prototype = {
+  constructor: Person,
+
+  sayName: function() {
+    alert(this.name);
+  }
+};
+
+var person1 = new Person("steve", 24, "Web Developer");
+var person2 = new Person("nicholas", 29, "Soft Engineer");
+
+person1.friends.push("van");
+
+alert(person1.friends); // ["shirley", "jame","van"]
+alert(person2.friends); // ["shirley", "jame"]
+alert(person1.friends === person2.friends); // false
+alert(person1.sayName === person2.sayName); // true
+```
+
+5. 动态原型模式
+本质其实还是组合模式，只不过把原型对象中共享的属性和方法，也封装在构造函数里…
+```
+function Person(name, age, job) {
+  this.name    = name;
+  this.age     = age;
+  this.job     = job;
+  this.friends = ["shirley", "jame"];
+
+  if (typeof this.sayName != "function") {
+    // 不能使用对象字面量 Person.prototype = {...};
+    Person.prototype.sayName = function() {
+      alert(this.name);
+    };
+  }
+}
+
+var person1 = new Person("steve", 24, "Web Developer");
+var person2 = new Person("nicholas", 29, "Soft Engineer");
+
+person1.friends.push("van");
+
+alert(person1.friends); // ["shirley", "jame","van"]
+alert(person2.friends); // ["shirley", "jame"]
+alert(person1.friends === person2.friends); // false
+alert(person1.sayName === person2.sayName); // true
+
+```
+
+6. 寄生构造函数模式
+
+```
+function SpecialArray() {
+  // 内部创建一个新数组
+  var values = new Array();
+
+  // 添加值
+  values.push.apply(values, arguments);
+
+  // 添加方法
+  values.toPipedString = function() {
+    return this.join("|");
+  };
+
+  return values;
+}
+
+var colors = new SpecialArray("red", "blue", "green"); // 注意：使用 new 创建实例
+alert(colors.toPipedString()); // red|blue|green
+```
+这个模式其实利用了构造函数的特性：
+- 如果被调用的函数没有显式的 return 表达式，则隐式地会返回 this 对象 - 也就是新创建的隐式对象。
+- 显式的 return 表达式将会影响返回结果，但仅限于返回的是一个对象。
+
+7. 稳妥构造函数模式
+
+```
+function Person(name, age, job) {
+  //创建要返回的对象
+  var o = new Object();
+
+  //可以在这里定义私有变量和函数
+
+  //添加方法
+  o.sayName = function() {
+    alert(name); // 注意：这里没有使用 this，因此我的理解是相当于闭包，保存住了外部 Person 的 AO（活动对象）
+  };
+
+  //返回对象
+  return o;
+}
+
+var person = Person("steve", 24, "web developer");
+person.sayName(); //"steve"
+```
+这里变量 person 中保存的就是一个稳妥对象(没有公共属性，而且方法也不引用 this 的对象)，因为除了调用 sayName() 方法以外，没有别的方法可以访问内部的数据。
+主要用在需要安全的环境（禁止 this 和 new），或者在防止数据被其他程序（如 Mashup）改动时使用。
 
 ### Javascript 如何实现继承？
 
-1. 构造函数绑定：使用 call 或 apply 方法，将父对象的构造函数绑定在子对象上
+1. 原型链模式
 
 ```
-function Cat(name,color){
- 　Animal.apply(this, arguments);
- 　this.name = name;
- 　this.color = color;
+function SuperType() {
+  this.property = true;
+}
+
+SuperType.prototype.getSuperValue = function() {
+  return this.property;
+};
+
+function SubType() {
+  this.subproperty = false;
+}
+
+SubType.prototype = new SuperType(); // 注意：使用 new 生成父类实例，重写了原型对象
+
+// 必须后添加方法
+SubType.prototype.getSubValue = function() {
+  return this.subproperty;
+};
+
+var instance = new SubType();
+alert(instance.getSuperValue()); // true，成功继承父类原型对象上的方法
+alert(instance.constructor);
+```
+
+原型链的问题
+- 引用类型属性的问题：相当于将父类属性添加到子类原型对象上形成共享。
+- 创建子类实例时，不能向超类型的构造函数中传递参数：准确的说是无法在不影响所有对象实例的情况下，给父类的构造函数传递参数。
+
+2. 借用构造函数
+
+```
+function SuperType(name) {
+  this.name = name;
+}
+
+function SubType() {
+  SuperType.call(this, 'steve');
+
+  this.age = 24;
+}
+
+var instance = new SubType();
+alert(instance.name); // steve
+alert(instance.age);  // 24
+```
+
+借用构造函数的问题：方法都在构造函数中定义，无法函数复用，子类方法也无法使用父类原型对象中的方法。
+
+3. 组合继承
+
+```
+function SuperType(name) {
+  this.name = name;
+  this.colors = ["red", "blue", "green"];
+}
+
+SuperType.prototype.sayName = function() {
+  return this.name;
+};
+
+function SubType(name, age) {
+
+  // 借用构造函数继承属性
+  SuperType.call(this, name);
+
+  this.age = age;
+}
+
+// 使用原型链继承了方法
+SubType.prototype = new SuperType();
+```
+
+组合继承问题：```SubType.prototype = new SuperType();```使SubType.prototype 上也拥有了一个值为 undefined 的 name 属性和 colors 数组。这不是我们的本意，这就是直接使用 new 操作符将父类实例赋值给子类原型对象的副作用。
+
+4. 原型式继承：将子对象的 prototype 指向父对象的 prototype
+
+```
+function object(o) {
+  function F() {}
+
+  F.prototype = o;
+
+  return new F();
 }
 ```
-
-2. 实例继承：将子对象的 prototype 指向父对象的一个实例
-
-```
-Cat.prototype = new Animal();
-Cat.prototype.constructor = Cat;
-```
-
-3. 拷贝继承：如果把父对象的所有属性和方法，拷贝进子对象
+即先创建一个临时性的构造函数 F，然后将传入的对象 o 作为这个构造函数的原型 F.prototype，最后返回这个临时类型的一个新实例 new F()。从本质上将就是对于传入的对象 o 进行了一次浅复制。
 
 ```
-function extend(Child, Parent) {
-　　　var p = Parent.prototype;
-　　　var c = Child.prototype;
-　　　for (var i in p) {
-　　　   c[i] = p[i];
-　　　}
-　　　c.uber = p;
+var person = {
+  name: "steve",
+  friends: ["shirley", "jame"]
+};
+
+var anotherPerson = object(person);
+anotherPerson.name = "young";
+anotherPerson.friends.push("sasuke");
+
+var yetAnotherPerson = object(person);
+yetAnotherPerson.name = "nicholas";
+yetAnotherPerson.friends.push("jobs");
+
+alert(person.friends); // shirley,jame,sasuke,jobs，friends 被共享了
+```
+ES5 中新增了 ```Object.create()``` 方法规范化了原型式继承。可以接收两个参数，第一个参数就是要继承的对象，第二个对象是可选的一个为新对象定义额外属性的对象。其实只传一个参数时，两个方法行为相同。
+
+第二个参数与```Object.defineProperties()``` 方法的第二个参数格式相同（覆盖同名属性），见下例。
+
+```
+var person = {
+  name: "steve",
+  friends: ["shirley", "jame"]
+};
+
+var anotherPerson = Object.create(person, {
+  name: {
+    value: "greg",
+    configurable: false
+  }
+});
+
+alert(anotherPerson.name); // greg
+```
+
+5. 寄生式继承
+基本思路类似用工厂模式包装原型式继承：创建一个仅用于封装继承过程的函数，在内部以某种方式来增强对象，最后返回该对象。
+
+```
+var person = {
+  name: "steve",
+  friends: ["shirley", "jame"]
+};
+
+function createAnother(original) {
+  var clone = object(original); // 原型式继承对象 original
+
+  // 增强对象
+  clone.sayHi = function() {
+    alert("Hi");
+  };
+
+  return clone; // 返回对象
 }
+
+var anotherPerson = createAnother(person);
+anotherPerson.sayHi(); // Hi
 ```
 
-4. 原型继承：将子对象的 prototype 指向父对象的 prototype
-
+6. 寄生组合式继承
+用原型式继承，让子类原型式继承父类的原型对象，解决组合继承问题
 ```
-function extend(Child, Parent) {
-    var F = function(){};
-    　F.prototype = Parent.prototype;
-    　Child.prototype = new F();
-    　Child.prototype.constructor = Child;
-    　Child.uber = Parent.prototype;
+function SuperType(name) {
+  this.name = name;
+  this.colors = ["red", "blue"];
 }
+
+SuperType.prototype.sayName = function() {
+  alert(this.name);
+};
+
+function SubType(name, age) {
+  SuperType.call(this, name); // 借用构造函数，继承父类属性（解决了传参）
+
+  this.age = age;
+}
+
+SubType.prototype = Object.create(SuperType.prototype, {
+  constructor: {
+    value       : SubType, // 指回子类构造函数
+    enumerable  : false,   // 默认值，其实可以不写
+    writable    : true,
+    configurable: true,
+  }
+});
+
+// 必须后添加方法（不然方法就加到之前的对象上去了_(:зゝ∠)_，要理解指针）
+SubType.prototype.sayAge = function() {
+  alert(this.age);
+};
 ```
 
-5. ES6 语法糖 extends：class ColorPoint extends Point {}
+7. ES6 语法糖 extends：class ColorPoint extends Point {}
 
 ```
 class ColorPoint extends Point {
@@ -286,97 +524,17 @@ class ColorPoint extends Point {
 }
 ```
 
-### js 继承方式及其优缺点
+##### 创建对象
+- 工厂模式：简单地在函数内部创建对象，添加属性和方法，然后返回对象。
+- 构造函数模式：在函数内部使用 this 添加属性和方法，可以创建自定义引用类型，可以使用 new 操作符创建实例。但是无法实现函数复用，造成内存浪费等问题。
+- 原型模式：使用构造函数的 prototype 属性来指定共享的属性和方法，本质上就是为了共享而生。
+- 组合模式：结合构造函数和原型模式的优点。
 
-原型链继承的缺点
-
--   一是字面量重写原型会中断关系，使用引用类型的原型，并且子类型还无法给超类型传递参数。
-
-借用构造函数（类式继承）
-
--   借用构造函数虽然解决了刚才两种问题，但没有原型，则复用无从谈起。所以我们需要原型链+借用构造函数的模式，这种模式称为组合继承
-
-组合式继承
-
--   组合式继承是比较常用的一种继承方法，其背后的思路是使用原型链实现对原型属性和方法的继承，而通过借用构造函数来实现对实例属性的继承。这样，既通过在原型上定义方法实现了函数复用，又保证每个实例都有它自己的属性。
-
-### javascript 创建对象的几种方式？
-
-javascript 创建对象简单的说,无非就是使用内置对象或各种自定义对象，当然还可以用 JSON；但写法有很多种，也能混合使用
-
-1. 对象字面量的方式
-
-```
-person={firstname:"Mark",lastname:"Yun",age:25,eyecolor:"black"};
-```
-
-2. 用 function 来模拟无参的构造函数
-
-```
- function Person(){}
-    var person=new Person();//定义一个function，如果使用new"实例化",该function可以看作是一个Class
-        person.name="Mark";
-        person.age="25";
-        person.work=function(){
-        alert(person.name+" hello...");
-    }
-person.work();
-```
-
-3. 用 function 来模拟参构造函数来实现（用 this 关键字定义构造的上下文属性）
-
-```
-function Pet(name,age,hobby){
-    this.name=name;//this作用域：当前对象
-    this.age=age;
-    this.hobby=hobby;
-    this.eat=function(){
-        alert("我叫"+this.name+",我喜欢"+this.hobby+",是个程序员");
-    }
-}
-var maidou =new Pet("麦兜",25,"coding");//实例化、创建对象
-maidou.eat();//调用eat方法
-```
-
-4. 用工厂方式来创建（内置对象）
-
-```
-var wcDog =new Object();
-     wcDog.name="旺财";
-     wcDog.age=3;
-wcDog.work=function(){
-    alert("我是"+wcDog.name+",汪汪汪......");
-}
-wcDog.work();
-```
-
-5. 用原型方式来创建
-
-```
-function Dog(){
-
-    }
-Dog.prototype.name="旺财";
-Dog.prototype.eat=function(){
-    alert(this.name+"是个吃货");
-}
-var wangcai =new Dog();
-wangcai.eat();
-```
-
-6. 用混合方式来创建
-
-```
-function Car(name,price){
-    this.name=name;
-    this.price=price;
-}
-    Car.prototype.sell=function(){
-    alert("我是"+this.name+"，我现在卖"+this.price+"万元");
-    }
-var camry =new Car("凯美瑞",27);
-camry.sell();
-```
+##### 对象继承
+- 原型链：将父类的实例赋值给子类构造函数的原型对象。但这样会有两个问题：传参和子类原型上有多余的父类构造函数中的属性。
+- 借用构造函数：为了解决传参问题，采用在子类中调用父类构造函数的方法。
+- 原型式：可以在不必预先定义构造函数的情况下实现继承，本质是执行对给定对象的浅复制。
+- 寄生组合式：巧妙利用原型式继承解决原型链中的第二个问题，是基于类型继承的最好方式。
 
 ### Javascript 作用链域?
 
@@ -552,31 +710,9 @@ var fireEvent = function(element, event){
         var mockEvent = document.createEventObject();
         return element.fireEvent('on' + event, mockEvent)
     }else{
-        var mockEvent = document.createEvent('HTMLEvents');
-        mockEvent.initEvent(event, true, true);
-        return !element.dispatchEvent(mockEvent);
+        var mockEvent = new Event(event, {bubbles: true, cancelable: true});
+        return element.dispatchEvent(mockEvent);
     }
-}
-```
-
-### 什么是函数节流？介绍一下应用场景和原理？
-
--   函数节流(throttle)是指阻止一个函数在很短时间间隔内连续调用。 只有当上一次函数执行后达到规定的时间间隔，才能进行下一次调用。 但要保证一个累计最小调用间隔（否则拖拽类的节流都将无连续效果）
--   函数节流用于 onresize, onscroll 等短时间内会多次触发的事件
--   函数节流的原理：使用定时器做时间节流。 当触发一个事件时，先用 setTimout 让这个事件延迟一小段时间再执行。 如果在这个时间间隔内又触发了事件，就 clearTimeout 原来的定时器， 再 setTimeout 一个新的定时器重复以上流程。
-
-函数节流简单实现：
-
-```
-function throttle(method, context) {
-     clearTimeout(methor.tId);
-     method.tId = setTimeout(function(){
-         method.call(context);
-     }， 100); // 两次调用至少间隔 100ms
-}
-// 调用
-window.onresize = function(){
-    throttle(myFunc, window);
 }
 ```
 
@@ -901,10 +1037,6 @@ function GetBytes(str){
 
 alert(GetBytes("你好,as"));
 ```
-
-### 请解释什么是事件代理
-
-事件代理（Event Delegation），又称之为事件委托。是 JavaScript 中常用绑定事件的常用技巧。顾名思义，“事件代理”即是把原本需要绑定的事件委托给父元素，让父元素担当事件监听的职务。事件代理的原理是 DOM 元素的事件冒泡。使用事件代理的好处是可以提高性能
 
 ### attribute 和 property 的区别是什么？
 
