@@ -217,7 +217,7 @@ Function.prototype.myCall = function (context) {
 
 请参考：[从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理](https://juejin.im/post/5a6547d0f265da3e283a1df7)
 
-### 前端跨域解决方案总结
+### 前端跨域解决方案总结
 
 请参考：[前端跨域方法总结](https://juejin.im/post/5bcc297c51882535074a695e)、[前端常见跨域解决方案（全）](https://segmentfault.com/a/1190000011145364)
 
