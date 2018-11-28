@@ -1,3 +1,9 @@
+### 0.1+0.2 !== 0.3
+
+- 计算机里所有的数据最终都是以二进制保存的，当然数字也一样。所以当计算机计算0.1+0.2的时候，实际上计算的是这两个数字在计算机里所存储的二进制；
+- 0.1、0.2转换为二进制都是无限循环小数，JavaScript采用IEEE 754标准，使用64位固定长度来表示，也就是标准的double双精度浮点数（相关的还有float 32位单精度），所以0.1、0.2二进制存在舍入误差
+参考文章：[0.1+0.2 !== 0.3？](https://juejin.im/post/5bd2f10a51882555e072d0c4)
+
 ### JavaScript 面向对象深入理解
 请参考文章：[JavaScript 面向对象深入理解](https://buptsteve.github.io/blog/2016/03/17/005.js-oo-chapter6/)
 ### JavaScript判断this指向
@@ -416,3 +422,7 @@ function resolvePromise(p2, x, resolve, reject) {
 
 module.exports = Promise;
 ```
+
+### Fetch和XMLHttpRequest区别
+
+参考文章：[传统 Ajax 已死，Fetch 永生](https://github.com/camsong/blog/issues/2)
