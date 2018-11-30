@@ -62,7 +62,7 @@ shouldComponentUpdate 这个方法用来判断是否需要调用 render 方法�
 - 合并操作，调用 component 的 setState 方法的时候, React 将其标记为 dirty.到每一个事件循环结束, React 检查所有标记 dirty 的 component 重新绘制.
 - 选择性子树渲染。开发人员可以重写 shouldComponentUpdate 提高 diff 的性能。
 
-参考：[React 的 diff 算法](https://segmentfault.com/a/1190000000606216)
+参考：[React 的 diff 算法](https://segmentfault.com/a/1190000000606216)、[虚拟DOM Diff算法解析](https://www.infoq.cn/article/react-dom-diff)
 
 ### React 中 refs 的作用是什么？
 
@@ -238,9 +238,21 @@ class UnControlledForm extends Component {
 - 如果我们将 AJAX 请求放置在生命周期的其他函数中，我们并不能保证请求仅在组件挂载完毕后才会要求响应。如果我们的数据请求在组件挂载之前就完成，并且调用了setState函数将数据添加到组件状态中，对于未挂载的组件则会报错。而在 componentDidMount 函数中进行 AJAX 请求则能有效避免这个问题。
 
 ### 描述事件在 React 中的处理方式。
-为了解决跨浏览器兼容性问题，您的 React 中的事件处理程序将传递 SyntheticEvent 的实例，它是 React 的浏览器本机事件的跨浏览器包装器。
+- 事件代理
+1. 区别于浏览器事件处理方式，React并未将事件处理函数与对应的DOM节点直接关联，而是在顶层使用了一个全局事件监听器监听所有的事件；
+2. React会在内部维护一个映射表记录事件与组件事件处理函数的对应关系；
+3. 当某个事件触发时，React根据这个内部映射表将事件分派给指定的事件处理函数；
+4. 当映射表中没有事件处理函数时，React不做任何操作当一个组件安装或者卸载时，相应的事件处理函数会自动被添加到事件监听器的内部映射表中或从表中删除。
 
+- 事件自动绑定
+1. 在JavaScript中创建回调函数时，一般要将方法绑定到特定的实例，以保证this的正确性；
+2. 在React中，每个事件处理回调函数都会自动绑定到组件实例（使用ES6语法创建的例外）；
+
+- 合成事件
+为了解决跨浏览器兼容性问题，您的 React 中的事件处理程序将传递 SyntheticEvent 的实例，它是 React 的浏览器本机事件的跨浏览器包装器。
 这些 SyntheticEvent 与您习惯的原生事件具有相同的接口，除了它们在所有浏览器中都兼容。有趣的是，React 实际上并没有将事件附加到子节点本身。React 将使用单个事件监听器监听顶层的所有事件，事件回调执行完毕，则把事件对象属性设为null，便于其它事件重用。这对于性能是有好处的，这也意味着在更新 DOM 时，React 不需要担心跟踪事件监听器。所以需要注意事件回调中使用异步回调引用事件对象属性，则为null，需要使用```event.persist()```处理。
+
+参考文章：[React组件事件详解](https://segmentfault.com/a/1190000013590052)
 
 ### createElement 和 cloneElement 有什么区别？
 
@@ -273,6 +285,12 @@ React.createClass()、ES6 class 和无状态函数。
 - 根据组件的职责通常把组件分为 UI 组件和容器组件。
 - UI 组件负责 UI 的呈现，容器组件负责管理数据和逻辑。
 - 两者通过 React-Redux 提供 connect 方法联系起来。
+
+### react context能替代redux吗
+react的context api还不能替代redux，context有以下缺点：
+- provider组件的value，必须改变后才能重渲染consumer组件；
+- 如果某个consumer组件只依赖provider传入的value的一个属性，则value其他属性改变，也会引起所有consumer组件重渲染，造成性能问题；
+- redux的provider初始化时只传入store对象，之后store引用对象不变，通过connect组件，利用发布订阅模式重渲染connect返回的组件
 
 ### 简述 flux 思想
 
