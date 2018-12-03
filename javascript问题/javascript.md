@@ -148,7 +148,7 @@ JavaScript 变量声明提升：
 
 1. 工厂模式
 
-```
+```js
 function createPerson(name, age, job) {
   var o = {
     name: name,
@@ -170,7 +170,7 @@ var person2 = createPerson("young", 25, "fs");
 
 2. 构造函数模式
 
-```
+```js
 function Person(name, age, job) {
   this.name = name;
   this.age  = age;
@@ -192,7 +192,7 @@ alert(person2.constructor === Person); // true
 
 3. 原型模式
 
-```
+```js
 function Person() {}
 
 // 属性
@@ -220,7 +220,7 @@ alert(person1.sayName === person2.sayName); // true 共享同一个方法
 - 构造函数用于定义实例属性
 - 原型模式用于定义共享的属性和方法
 
-```
+```js
 function Person(name, age, job) {
   this.name    = name;
   this.age     = age;
@@ -249,7 +249,7 @@ alert(person1.sayName === person2.sayName); // true
 
 5. 动态原型模式
 本质其实还是组合模式，只不过把原型对象中共享的属性和方法，也封装在构造函数里…
-```
+```js
 function Person(name, age, job) {
   this.name    = name;
   this.age     = age;
@@ -278,7 +278,7 @@ alert(person1.sayName === person2.sayName); // true
 
 6. 寄生构造函数模式
 
-```
+```js
 function SpecialArray() {
   // 内部创建一个新数组
   var values = new Array();
@@ -303,7 +303,7 @@ alert(colors.toPipedString()); // red|blue|green
 
 7. 稳妥构造函数模式
 
-```
+```js
 function Person(name, age, job) {
   //创建要返回的对象
   var o = new Object();
@@ -329,7 +329,7 @@ person.sayName(); //"steve"
 
 1. 原型链模式
 
-```
+```js
 function SuperType() {
   this.property = true;
 }
@@ -360,7 +360,7 @@ alert(instance.constructor);
 
 2. 借用构造函数
 
-```
+```js
 function SuperType(name) {
   this.name = name;
 }
@@ -380,7 +380,7 @@ alert(instance.age);  // 24
 
 3. 组合继承
 
-```
+```js
 function SuperType(name) {
   this.name = name;
   this.colors = ["red", "blue", "green"];
@@ -406,7 +406,7 @@ SubType.prototype = new SuperType();
 
 4. 原型式继承：将子对象的 prototype 指向父对象的 prototype
 
-```
+```js
 function object(o) {
   function F() {}
 
@@ -417,7 +417,7 @@ function object(o) {
 ```
 即先创建一个临时性的构造函数 F，然后将传入的对象 o 作为这个构造函数的原型 F.prototype，最后返回这个临时类型的一个新实例 new F()。从本质上将就是对于传入的对象 o 进行了一次浅复制。
 
-```
+```js
 var person = {
   name: "steve",
   friends: ["shirley", "jame"]
@@ -437,7 +437,7 @@ ES5 中新增了 ```Object.create()``` 方法规范化了原型式继承。可�
 
 第二个参数与```Object.defineProperties()``` 方法的第二个参数格式相同（覆盖同名属性），见下例。
 
-```
+```js
 var person = {
   name: "steve",
   friends: ["shirley", "jame"]
@@ -456,7 +456,7 @@ alert(anotherPerson.name); // greg
 5. 寄生式继承
 基本思路类似用工厂模式包装原型式继承：创建一个仅用于封装继承过程的函数，在内部以某种方式来增强对象，最后返回该对象。
 
-```
+```js
 var person = {
   name: "steve",
   friends: ["shirley", "jame"]
@@ -479,7 +479,7 @@ anotherPerson.sayHi(); // Hi
 
 6. 寄生组合式继承
 用原型式继承，让子类原型式继承父类的原型对象，解决组合继承问题
-```
+```js
 function SuperType(name) {
   this.name = name;
   this.colors = ["red", "blue"];
@@ -512,7 +512,7 @@ SubType.prototype.sayAge = function() {
 
 7. ES6 语法糖 extends：class ColorPoint extends Point {}
 
-```
+```js
 class ColorPoint extends Point {
     constructor(x, y, color) {
         super(x, y); // 调用父类的constructor(x, y)
@@ -630,7 +630,7 @@ DOM3 级事件处理方式：
 
 示例：
 
-```
+```js
 ulEl.addEventListener('click', function(e){
     var target = event.target || event.srcElement;
     if(!!target && target.nodeName.toUpperCase() === "LI"){
@@ -649,7 +649,7 @@ IE 只事件冒泡，不支持事件捕获；火狐同时支持件冒泡和事�
 -   return false javascript 的 return false 只会阻止默认行为，而是用 jQuery 的话则既阻止默认行为又防止对象冒泡。
 -   阻止冒泡 w3c 的方法是 e.stopPropagation()，IE 则是使用 e.cancelBubble = true
 
-```
+```js
 [js] view plaincopy
 function stopHandler(event)
 
@@ -704,7 +704,7 @@ function stopHandler(event)
 -   W3C: 使用 dispatchEvent 方法
 -   IE: 使用 fireEvent 方法
 
-```
+```js
 var fireEvent = function(element, event){
     if (document.createEventObject){
         var mockEvent = document.createEventObject();
@@ -738,7 +738,7 @@ map 每次为 parseInt 传 3 个参数(elem, index, array)，其中 index 为数
 
 因此，map 遍历 ["1", "2", "3"]，相应 parseInt 接收参数如下
 
-```
+```js
 parseInt('1', 0);  // 1
 parseInt('2', 1);  // NaN
 parseInt('3', 2);  // NaN
@@ -758,7 +758,7 @@ parseInt('3', 2);  // NaN
 
 ### 解释一下这段代码的意思吗？
 
-```
+```js
   [].forEach.call($$("*"), function(el){
       el.style.outline = "1px solid #" + (~~(Math.random()*(1<<24))).toString(16);
   })
@@ -806,7 +806,7 @@ use strict 是一种 ECMAscript 5 添加的（严格）运行模式,这种模式
 
 ### 如何判断一个对象是否属于某个类？
 
-```
+```js
 // 使用instanceof （待完善）
    if(a instanceof Person){
        alert('yes');
@@ -898,7 +898,7 @@ ajax 的全称：Asynchronous Javascript And XML
 -   主要好处就是可以消除对象间的耦合，通过使用工程方法而不是 new 关键字。将所有实例化的代码集中在一个位置防止代码重复
 -   工厂模式解决了重复实例化的问题 ，但还有一个问题,那就是识别问题，因为根本无法 搞清楚他们到底是哪个对象的实例
 
-```
+```js
 function createObject(name,age,profession){
     //集中实例化的函数
     var obj = new Object();
@@ -943,7 +943,7 @@ var test1 = createObject('trigkit4',22,'programmer');//第一个实例var test2 
 
 ### 实现一个函数 clone，可以对 JavaScript 中的 5 种主要的数据类型（包括 Number、String、Object、Array、Boolean）进行值复制（常考）
 
-```
+```js
 function deepClone(obj) {
     if (!isObject(obj)) {
         throw new Error('obj 不是一个对象！')
@@ -961,7 +961,7 @@ function deepClone(obj) {
 
 注意：for...in 法不支持拷贝 func、date、reg 和 err
 
-```
+```js
 // 代理法
 function deepClone(obj) {
     if (!isObject(obj)) {
@@ -1001,7 +1001,7 @@ function deepClone(obj) {
 
 将时间设为当前时间往前一点
 
-```
+```js
 var date = new Date();
 date.setDate(date.getDate() - 1);//真正的删除
 ```
@@ -1010,7 +1010,7 @@ setDate()方法用于设置一个月的某一天
 
 expires 的设置
 
-```
+```js
   document.cookie = 'user='+ encodeURIComponent('name')  + ';expires = ' + new Date(0)
 ```
 
@@ -1018,7 +1018,7 @@ expires 的设置
 
 假设：一个英文字符占用一个字节，一个中文字符占用两个字节
 
-```
+```js
 function GetBytes(str){
 
         var len = str.length;
@@ -1080,7 +1080,7 @@ alert(GetBytes("你好,as"));
 
 ### 简单实现 Function.bind 函数？
 
-```
+```js
   if (!Function.prototype.bind) {
     Function.prototype.bind = function(that) {
       var func = this, args = arguments;
@@ -1151,7 +1151,7 @@ alert(GetBytes("你好,as"));
 
 ### 在 javascript 中，1 与 Number(1)有什么区别 [易混淆]
 
-```
+```js
 var a = Number(1) // 1
 var b = new Number(1)  // Number {[[PrimitiveValue]]: 1}
 typeof (a) // number
@@ -1163,7 +1163,7 @@ a == b // true
 -   new Number(1)返回的是一个对象
 -   a==b 为 true 是因为所以在求值过程中，总是会强制转为原始数据类型而非对象，例如下面的代码:
 
-```
+```js
 typeof 123 // "number"
 typeof new Number(123) // "object"
 123 instanceof Number // false
@@ -1179,7 +1179,7 @@ true
 
 布尔的包装对象 Boolean 的对象实例，对象只有在 null 与 undefined 时，才会认定为布尔的 false 值，布尔包装对象本身是个对象，对象->布尔 都是 true，所以 new Boolean(false)其实是布尔的 true，看下面这段代码:
 
-```
+```js
 if(new Boolean(false)){
     alert('true!!');
 }
@@ -1187,7 +1187,7 @@ if(new Boolean(false)){
 
 只有使用了 valueOf 后才是真正的转换布尔值，与上面包装对象与原始资料转换说明的相同:
 
-```
+```js
 !!(new Boolean(false))  //true
 (new Boolean(false)).valueOf() //false
 ```

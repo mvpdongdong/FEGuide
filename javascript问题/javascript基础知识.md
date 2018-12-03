@@ -16,32 +16,32 @@
 现在我们可以根据优先级来判断函数在某个调用位置应用的是哪条规则。可以按照下面的顺序来进行判断：
 1. 函数是否在new中调用(new绑定)?如果是的话this绑定的是新创建的对象。
 
-```
+```js
 var bar = new foo()
 ```
 
 2. 函数是否通过call、apply(显式绑定)或者bind硬绑定调用?如果是的话，this绑定的是 指定的对象。
 
-```
+```js
 var bar = foo.call(obj2)
 ```
 
 3. 函数是否在某个上下文对象中调用(隐式绑定)?如果是的话，this绑定的是那个上 下文对象。
 
-```
+```js
 var bar = obj1.foo()
 ```
 
 4. 如果都不是的话，使用默认绑定。如果在严格模式下，就绑定到undefined，否则绑定到 全局对象。
 
-```
+```js
 var bar = foo()
 ```
 注意:对于默认绑定来说，决定 this 绑定对象的并不是调用位置是否处于严格模式，而是 函数体是否处于严格模式。如果函数体处于严格模式，this 会被绑定到 undefined，否则 this 会被绑定到全局对象。
 
 ### 函数节流实现
 
-```
+```js
 function throttle (fn, wait, options) {
   let timeout = null, previous = 0, args, context, result;
   if (!options) options = {};
@@ -82,7 +82,7 @@ function throttle (fn, wait, options) {
 ```
 ### 函数防抖实现
 
-```
+```js
 function debounce (fn, wait, imediate) {
   let timeout = null, args, context, result;
 
@@ -118,7 +118,7 @@ function debounce (fn, wait, imediate) {
 
 ### compose函数实现
 
-```
+```js
 function compose () {
   var args = arguments;
   var start = arguments.length - 1;
@@ -155,7 +155,7 @@ console.log(_compose(...funs)(100))
 
 ### 深克隆
 
-```
+```js
 //乞丐版本
 function deepClone (obj) {
   var res = {};
@@ -180,7 +180,7 @@ function deepClone (obj) {
 
 ### bind实现
 
-```
+```js
 Function.prototype._bind = function (context) {
   var params = Array.prototype.slice.call(arguments, 1);
   var func = this;
@@ -194,7 +194,7 @@ Function.prototype._bind = function (context) {
 
 ### apply实现
 
-```
+```js
 Function.prototype.myApply = function (context) {
   context = context || window;
   context.fn = this;
@@ -211,7 +211,7 @@ Function.prototype.myApply = function (context) {
 
 ### call实现
 
-```
+```js
 Function.prototype.myCall = function (context) {
   context = context || window;
   context.fn = this;
@@ -237,7 +237,7 @@ Function.prototype.myCall = function (context) {
 
 ### Promise的标准实现
 
-```
+```js
 function Promise (executor) {
   const self = this;
   this.status = 'pending';
