@@ -18,29 +18,40 @@
 2. [CSS 问题](./css问题/css.md)
 3. [javaScript 问题](./javascript问题/javascript.md)
 4. [网络问题](./网络问题/http.md)
-5. 计算机底层问题
-6. nodeJs 问题
-7. [框架问题集合](./框架/)
-8. 简历求职问题
+5. [nodeJs 问题](./node)
+6. [框架问题集合](./框架/)
 
-### 进行中
+### 数据结构
 
-- 框架问题集合
+* [栈](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/栈.md)
+* [队列](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/队列.md)
+* [链表](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/链表.md)
+* [集合](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/集合.md)
+* [字典](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/字典.md)
+* [哈希表](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/哈希表.md)
+* [二叉树](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/二叉树.md)
+* [图](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/图.md)
+* [排序|查找](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/README.md)
+* [动态规划](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/动态规划.md)
+* [贪心算法](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/贪心算法.md)
 
-### 已完成
+> [LeetCode 刷题进度](https://github.com/MuYunyun/blog/blob/master/LeetCode/README.md)
 
-- [x] [HTML 问题](./html问题/html.md)
-- [x] [CSS 问题](./css问题/css.md)
-- [x] [javaScript 问题](./javascript问题/javascript.md)
-- [x] [网络问题](./网络问题/http.md)
-- 框架
-  - [x] [常见 vue 面试题](./框架/vue/vue.md)
-  - [x] [常见 react 面试题](./框架/react/react.md)
+### 设计模式
 
-### 贡献指南
-
-请阅读我们的[贡献指南](./CONTRIBUTING.md)，了解可以如何贡献，如何提出改进建议。
-
-### 许可协议
-
-本项目全部内容遵守 [MIT 许可协议](./LICENSE).
+- [x] [单例模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/单例模式.md)
+- [x] [策略模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/策略模式.md)
+- [x] [代理模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/代理模式.md)
+- [x] [迭代器模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/迭代器模式.md)
+- [x] [发布-订阅模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/发布订阅模式.md)
+- [x] [命令模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/命令模式.md)
+- [x] [组合模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/组合模式.md)
+- [x] [模板方法模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/模板方法模式.md)
+- [x] [享元模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/享元模式.md)
+- [x] [职责链模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/职责链模式.md)
+- [x] [中介者模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/中介者模式.md)
+- [x] [装饰者模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/装饰者模式.md)
+- [x] [状态模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/状态模式.md)
+- [x] [适配者模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/适配者模式.md)
+- [x] [观察者模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/观察者模式.md)
+- [ ] [访问者模式](https://github.com/MuYunyun/blog/blob/master/BasicSkill/设计模式/访问者模式.md)
