@@ -235,6 +235,10 @@ Function.prototype.myCall = function (context) {
 
 请参考：[前端跨域方法总结](https://juejin.im/post/5bcc297c51882535074a695e)、[前端常见跨域解决方案（全）](https://segmentfault.com/a/1190000011145364)、[跨域实践二三事](https://github.com/MuYunyun/blog/issues/13)
 
+### Promise
+
+请参考：[面试精选之Promise](https://juejin.im/post/5b31a4b7f265da595725f322)
+
 ### Promise的标准实现
 
 ```js
@@ -436,3 +440,16 @@ module.exports = Promise;
 ### 尾递归调用
 递归本质上是一种循环操作。纯粹的函数式编程语言没有循环操作命令，所有的循环都用递归实现，这就是为什么尾递归对这些语言极其重要。对于其他支持“尾调用优化”的语言（比如 Lua，ES6），只需要知道循环可以用递归代替，而一旦使用递归，就最好使用尾递归
 参考文章：[尾递归优化](http://es6.ruanyifeng.com/#docs/function#尾调用优化)
+
+### Promise、async\await区别
+
+参考文章：[6 Reasons Why JavaScript’s Async/Await Blows Promises Away (Tutorial)](https://hackernoon.com/6-reasons-why-javascripts-async-await-blows-promises-away-tutorial-c7ec10518dd9)
+
+### async\await原理
+
+参考文章：[「译」更快的 async 函数和 promises](https://segmentfault.com/a/1190000017043012)
+
+### 观察者模式和发布订阅模式区别
+1、观察者模式包含目标对象(Subject)、观察者对象(Observer)，Subject收集一系列Observer，当有时间发生时，调用Observer自身的方法，触发回调，所以Subject、Observer互相依赖；
+2、发布订阅模式中有一个事件调度中心PubSub对象，通过事件名称注册一系列订阅函数，当事件发生时，触发相应的订阅函数。
+参考文章：[谈谈观察者模式和发布订阅模式](https://www.jianshu.com/p/69bfe35229ef)
