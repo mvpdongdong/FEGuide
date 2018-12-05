@@ -101,3 +101,5 @@ next()
 ### 错误捕获
 
 此外完善的框架都有相应的错误捕获机制，因此当程序 `throw new Error()` 抛错时，也进行了相应的错误捕获，[相关代码](https://github.com/MuYunyun/blog/blob/7bdad6158a6d49bc3a99123a054b0934034cc598/BasicSkill/node/koa/application.js#L70)
+
+参考文章：[从头实现一个koa框架](https://github.com/mly-zju/blog/issues/9)
