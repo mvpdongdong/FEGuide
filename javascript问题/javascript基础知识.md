@@ -453,6 +453,49 @@ module.exports = Promise;
 参考文章：[「译」更快的 async 函数和 promises](https://segmentfault.com/a/1190000017043012)
 
 ### 观察者模式和发布订阅模式区别
+
 1、观察者模式包含目标对象(Subject)、观察者对象(Observer)，Subject收集一系列Observer，当有时间发生时，调用Observer自身的方法，触发回调，所以Subject、Observer互相依赖；
 2、发布订阅模式中有一个事件调度中心PubSub对象，通过事件名称注册一系列订阅函数，当事件发生时，触发相应的订阅函数。
 参考文章：[谈谈观察者模式和发布订阅模式](https://www.jianshu.com/p/69bfe35229ef)
+
+### PWA知识总结
+
+参考文章：[如何优雅的为 PWA 注册 Service Worker](https://zhuanlan.zhihu.com/p/28161855)、[谨慎处理 Service Worker 的更新](https://zhuanlan.zhihu.com/p/51118741)、[PWA文档](https://lavas.baidu.com/pwa/README)
+
+### for...of 和 for...in区别
+
+参考文章：[for...of MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/for...of)、[for...in MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Statements/for...in)
+
+### 数组、对象遍历
+
+- 数组遍历方法：传统for遍历、```for...of```、数组方法forEach、map，但是forEach、map不能break，需要注意```for...of```必须用来遍历iterable对象，包括：Array、Array-like(Arguments、NodeList)、Map、Set、定义了Iterable接口的对象；
+- 对象遍历方法：```for...in```、```Object.keys```，其中```for...in```会对原型属性进行遍历，需要hasOwnProperty进行判断，```Object.keys```都是对象自身属性，但是这两个方法只能遍历enumerable属性，若需要遍历全部自身属性包括non-enumerable属性需要使用```Object.getOwnPropertyNames```，以上不能遍历key是Symbol的属性，需要使用```Object.getOwnPropertySymbols```;
+
+参考文章：[JavaScript 遍历、枚举与迭代的骚操作（上篇）](https://juejin.im/post/5bfbbe2df265da61407e95a3)
+
+### 迭代器（iterator）、生成器（generator）
+
+1. iterator是一种特殊的对象，其中有一个next方法，每次枚举都会调用此方法，返回一个对象，对象有两个属性：
+  - value属性，表示此次调用的返回值（for of循环只返回此值）;
+  - done属性，Boolean值类型，标志此次调用是否已结束。
+2. generator是一种特殊函数，返回iterator对象，生成器声明方式跟普通函数相似，仅在函数名前面加一个*号，函数内部使用yield关键字指定每次迭代返回值。
+  ```js
+  // 生成器
+    function *iteratorMother() {
+      yield 'we';
+      yield 'are';
+      yield 'the BlackGold team!';
+    }
+
+    // 迭代器
+    let iterator = iteratorMother();
+
+    console.log(iterator.next());  // { value: "we", done: false }
+    console.log(iterator.next());  // { value: "are", done: false }
+    console.log(iterator.next());  // { value: "the BlackGold team!", done: false }
+
+    console.log(iterator.next());  // { value: undefined, done: true }
+    console.log(iterator.next());  // { value: undefined, done: true }
+  ```
+
+参考文章：[JavaScript 遍历、枚举与迭代的骚操作（下篇）](https://juejin.im/post/5c07b764e51d450c457199f9)
