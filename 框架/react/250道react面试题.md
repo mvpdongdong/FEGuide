@@ -3819,7 +3819,7 @@
          if (state.address === latestAddress) {
            return null;
          } else {
-           return { title: latestAddress };
+           return { address: latestAddress };
          }
        });
      };
