@@ -3,23 +3,26 @@
  * @return {number[][]}
  */
 var permute = function (nums) {
-  const result = []
-  const DFS = function(arr) {
-    if (arr.length === nums.length) {
-      result.push(arr.slice())
-      return
+    const result = []
+    const swap = function (arr, i, j) {
+        let tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+    }
+    const DFS = function(arr, len, index) {
+    if (index === len) {
+        result.push(arr.slice())
+        return
     }
 
-    for (let i = 0; i < nums.length; i++) {
-      if (!arr.includes(nums[i])) {
-        arr.push(nums[i])
-        DFS(arr)
-        arr.pop(nums[i])
-      }
+    for (let i = index; i < len; i++) {
+        swap(arr, index, i)
+        DFS(arr, len, index + 1)
+        swap(arr, index, i);
     }
-  }
+    }
 
-  DFS([])
+    DFS(nums, nums.length, 0)
 
-  return result
+    return result
 };
