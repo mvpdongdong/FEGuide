@@ -9,7 +9,7 @@ var permute = function (nums) {
         arr[i] = arr[j];
         arr[j] = tmp;
     }
-    const DFS = function(arr, len, index) {
+    const DFS = function(arr, index, len) {
         if (index === len) {
             result.push(arr.slice())
             return
@@ -17,7 +17,7 @@ var permute = function (nums) {
 
         for (let i = index; i < len; i++) {
             swap(arr, index, i)
-            DFS(arr, len, index + 1)
+            DFS(arr, index + 1, len)
             swap(arr, index, i);
         }
     }
