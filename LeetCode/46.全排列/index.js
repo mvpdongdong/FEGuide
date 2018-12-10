@@ -22,7 +22,7 @@ var permute = function (nums) {
         }
     }
 
-    DFS(nums, nums.length, 0)
+    DFS(nums, 0, nums.length)
 
     return result
 };
