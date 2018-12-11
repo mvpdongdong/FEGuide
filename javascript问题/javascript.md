@@ -96,6 +96,7 @@ DOM 树 和 渲染树 的区别：
 -   避免使用 css 表达式(expression)，因为每次调用都会重新计算值（包括加载页面）
 -   尽量使用 css 属性简写，如：用 border 代替 border-width, border-style, border-color
     批量修改元素样式：elem.className 和 elem.style.cssText 代替 elem.style.xxx
+参考文章：[你真的了解回流和重绘吗](https://juejin.im/post/5c0f104551882509a7683d63)
 
 ### script 的位置是否会影响首屏显示时间？
 
@@ -664,6 +665,21 @@ function stopHandler(event)
 ```
 
 参考链接:[浅谈 javascript 事件取消和阻止冒泡-开源中国 2015](http://wiki.jikexueyuan.com/project/brief-talk-js/event-cancellation-and-prevent-bubbles.html)
+
+### 不支持冒泡的事件
+
+- UI事件
+  - load
+  - unload
+  - scroll
+  - resize
+  - error
+- 焦点事件
+  - focus
+  - blur
+- 鼠标事件
+  - mouseleave
+  - mouseenter
 
 ### IE 的事件处理和 W3C 的事件处理有哪些区别？(必考)
 

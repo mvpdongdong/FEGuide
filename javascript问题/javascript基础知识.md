@@ -450,7 +450,7 @@ module.exports = Promise;
 
 ### async\await原理
 
-参考文章：[「译」更快的 async 函数和 promises](https://segmentfault.com/a/1190000017043012)
+参考文章：[8张图让你一步步看清 async/await 和 promise 的执行顺序](https://segmentfault.com/a/1190000017224799?_ea=5345525)、[「译」更快的 async 函数和 promises](https://segmentfault.com/a/1190000017043012)
 
 ### 观察者模式和发布订阅模式区别
 
