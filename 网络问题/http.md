@@ -325,3 +325,7 @@ Cookie 就是用来在本地缓存记住一些状态的，一个 Cookie 一般�
 
 感谢:[Android 网络系列（一）：关于计算机网络的一些基础 -
 舒大飞](https://juejin.im/post/5b49f9fbf265da0f563dc9d8)
+
+### 服务器负载均衡的基本功能和实现原理
+
+参考文章：[服务器负载均衡的基本功能和实现原理](http://blog.51cto.com/virtualadc/615836)
