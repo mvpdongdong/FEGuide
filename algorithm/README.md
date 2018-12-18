@@ -5,3 +5,6 @@
 - [x] [归并排序](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/排序算法/归并排序.md)
 - [x] [递归](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/斐波那契数列优化.md)
 - [x] [二分查找](https://github.com/MuYunyun/blog/blob/master/BasicSkill/algorithm/二分查找.md)
+
+### 算法项目
+[JavaScript 算法与数据结构](https://github.com/trekhleb/javascript-algorithms/blob/master/README.zh-CN.md)
