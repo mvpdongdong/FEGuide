@@ -563,3 +563,11 @@ post请求过程（3次交互）：
 
 参考文章: [Webpack & The Hot Module Replacement](https://medium.com/@rajaraodv/webpack-hot-module-replacement-hmr-e756a726a07)
 
+### babel工作流程
+babel工作流程分为三个部分：
+- 输入code，通过babel-parser生成AST(抽象语法树)
+- 根据上一步的AST，通过babel-traverse及配置的babel plugins，根据深度遍历原则对AST进行增删改操作
+- 对上一步的AST，通过babel-generator生成code
+
+### import、require、export、module.exports 混合使用详解
+参考文章：[import、require、export、module.exports 混合使用详解](https://github.com/ShowJoy-com/showjoy-blog/issues/39)
