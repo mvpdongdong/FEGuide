@@ -41,8 +41,53 @@ const get = (obj, ...args) =>
   )
 ```
 
-### 将嵌套的数组“拉平”，变成一维的数组
+### 将嵌套的数组扁平化，变成一维的数组
 
 ```js
 const deepFlatten = arr => [].concat(...arr.map(v => Array.isArray(v) ? deepFlatten(v) : v));
+
+function flatten(arr){
+  return arr.reduce(function(prev,item){
+    return prev.concat(Array.isArray(item)?flatten(item):item);
+  },[]);
+}
+
+```
+
+### 实现超出整数存储范围的两个大整数相加function add(a,b)。注意a和b以及函数的返回值都是字符串
+
+```js
+const add = (a, b) => {
+  const lenA = a.length;
+  const lenB = b.length;
+  const len = lenA > lenB ? lenA : lenB;
+
+  if (len > lenA) {
+    for (let i = 0; i < len - lenA; i++) {
+      a = '0' + a;
+    }
+  }
+  if (len > lenB) {
+    for (let i = 0; i < len - lenB; i++) {
+      b = '0' + b;
+    }
+  }
+
+  const arrA = a.split('').reverse();
+  const arrB = b.split('').reverse();
+  let addCarry = 0;
+  const arr = [];
+  for (let i = 0; i < len; i ++) {
+    let res = Number(arrA[i]) + Number(arrB[i]) + addCarry;
+    arr[i] = res > 9 ? res - 10 : res;
+    addCarry = res > 9 ? 1 : 0;
+  }
+
+  if (addCarry === 1) {
+    arr[len] = 1;
+  }
+
+  return arr.reverse().join('');
+
+}
 ```

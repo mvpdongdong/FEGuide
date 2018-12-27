@@ -578,3 +578,18 @@ babel工作流程分为三个部分：
 
 ### 有限状态机在react管理状态应用
 参考文章：[前端状态管理请三思](https://zhuanlan.zhihu.com/p/30739948)
+
+### Javascript 高性能动画与页面渲染、硬件加速
+开启硬件加速方式：给一个元素添加上了-webkit-transform: translateZ(0);或者-webkit-transform: translate3d(0,0,0);属性，那么你就等于告诉了浏览器用GPU来渲染该层，与一般的CPU渲染相比，提升了速度和性能。
+
+创建独立渲染层方式：
+- 拥有translate3D属性元素
+- animation动画涉及opacity或者transform变化
+- 开清硬件加速并拥有filter属性的元素
+- 有一个后代元素是独立的layer
+- 元素的相邻元素是独立layer
+- 3D上下文canvas或者开启硬件加速的2Dcanvas
+- flash
+- video标签并使用加速视频解码
+
+参考文章：[Javascript 高性能动画与页面渲染](https://juejin.im/entry/58b0187c1b69e60058a09faf)
