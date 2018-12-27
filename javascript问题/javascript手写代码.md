@@ -40,3 +40,9 @@ const get = (obj, ...args) =>
       .reduce((prev, curr) => prev && prev[curr], obj)
   )
 ```
+
+### 将嵌套的数组“拉平”，变成一维的数组
+
+```js
+const deepFlatten = arr => [].concat(...arr.map(v => Array.isArray(v) ? deepFlatten(v) : v));
+```

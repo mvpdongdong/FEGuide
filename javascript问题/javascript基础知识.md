@@ -571,3 +571,10 @@ babel工作流程分为三个部分：
 
 ### import、require、export、module.exports 混合使用详解
 参考文章：[import、require、export、module.exports 混合使用详解](https://github.com/ShowJoy-com/showjoy-blog/issues/39)
+
+
+### 有限状态机在 CSS 动画中的应用
+参考文章：[有限状态机在 CSS 动画中的应用](https://github.com/dawn-plex/translate/blob/master/articles/css-animations-with-finite-state-machines.md)
+
+### 有限状态机在react管理状态应用
+参考文章：[前端状态管理请三思](https://zhuanlan.zhihu.com/p/30739948)
