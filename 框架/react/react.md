@@ -322,3 +322,8 @@ creat-react-app Yeoman 等
 
 - 一个组件所需要的数据，必须由父组件传过来，而不能像 flux 中直接从 store 取。
 - 当一个组件相关数据更新时，即使父组件不需要用到这个组件，父组件还是会重新 render，可能会有效率影响，或者需要写复杂的 shouldComponentUpdate 进行判断。
+
+
+### react fiber浅析
+
+参考文章：[React Fiber](https://juejin.im/post/5ab7b3a2f265da2378403e57)、[完全理解React Fiber](http://www.ayqy.net/blog/dive-into-react-fiber/)
