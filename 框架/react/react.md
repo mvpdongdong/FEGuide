@@ -65,7 +65,7 @@ shouldComponentUpdate 这个方法用来判断是否需要调用 render 方法�
 - 合并操作，调用 component 的 setState 方法的时候, React 将其标记为 dirty.到每一个事件循环结束, React 检查所有标记 dirty 的 component 重新绘制.
 - 选择性子树渲染。开发人员可以重写 shouldComponentUpdate 提高 diff 的性能。
 
-参考：[React 的 diff 算法](https://segmentfault.com/a/1190000000606216)、[虚拟DOM Diff算法解析](https://www.infoq.cn/article/react-dom-diff)
+参考：[React 源码剖析系列 － 不可思议的 react diff](https://zhuanlan.zhihu.com/p/20346379)、[虚拟DOM Diff算法解析](https://www.infoq.cn/article/react-dom-diff)
 
 ### React 中 refs 的作用是什么？
 
