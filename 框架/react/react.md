@@ -327,6 +327,10 @@ creat-react-app Yeoman 等
 - 当一个组件相关数据更新时，即使父组件不需要用到这个组件，父组件还是会重新 render，可能会有效率影响，或者需要写复杂的 shouldComponentUpdate 进行判断。
 
 
-### react fiber浅析
+### react 16.x版本的react fiber和 fiber reconciler解析
 
-参考文章：[React Fiber](https://juejin.im/post/5ab7b3a2f265da2378403e57)、[完全理解React Fiber](http://www.ayqy.net/blog/dive-into-react-fiber/)
+参考文章：[React的新引擎—React Fiber是什么？](https://juejin.im/post/5bd55ecc6fb9a05cdd2d5113)、[React Fiber](https://juejin.im/post/5ab7b3a2f265da2378403e57)、[为 Luy 实现 React Fiber 架构](https://zhuanlan.zhihu.com/p/37098539)、[完全理解React Fiber](http://www.ayqy.net/blog/dive-into-react-fiber/)
+
+### react 15.x版本stack reconciler解析
+
+参考文章：[stack reconciler](https://react.css88.com/docs/implementation-notes.html)
