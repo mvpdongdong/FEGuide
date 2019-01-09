@@ -329,7 +329,9 @@ creat-react-app Yeoman 等
 
 ### react 16.x版本的react fiber和 fiber reconciler解析
 
-参考文章：[React的新引擎—React Fiber是什么？](https://juejin.im/post/5bd55ecc6fb9a05cdd2d5113)、[React Fiber](https://juejin.im/post/5ab7b3a2f265da2378403e57)、[为 Luy 实现 React Fiber 架构](https://zhuanlan.zhihu.com/p/37098539)、[完全理解React Fiber](http://www.ayqy.net/blog/dive-into-react-fiber/)
+参考文章：[React Fiber 那些事: 深入解析新的协调算法](https://www.yuque.com/es2049/blog/nbp4xc)、
+[为什么React Fiber使用链表遍历组件树](https://github.com/dawn-plex/translate/blob/master/articles/the-how-and-why-on-reacts-usage-of-linked-list-in-fiber-to-walk-the-components-tree.md)
+[React的新引擎—React Fiber是什么？](https://juejin.im/post/5bd55ecc6fb9a05cdd2d5113)、[React Fiber](https://juejin.im/post/5ab7b3a2f265da2378403e57)、[为 Luy 实现 React Fiber 架构](https://zhuanlan.zhihu.com/p/37098539)、[完全理解React Fiber](http://www.ayqy.net/blog/dive-into-react-fiber/)
 
 ### react 15.x版本stack reconciler解析
 

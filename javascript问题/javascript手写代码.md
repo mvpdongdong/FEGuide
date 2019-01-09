@@ -388,15 +388,13 @@ Promise.all = function (items) {
   let res = [];
   let num = 0;
   return new Promise(function (resolve, reject) {
-    for (var i = 0; i < len; i ++) {
-      (function (index) {
-        items[index].then(function (data) {
-          res[index] = data;
-          if (++ num === len) {
-            resolve(res);
-          }
-        }, reject);
-      })(i);
+    for (let i = 0; i < len; i ++) {
+      items[i].then(function (data) {
+        res[i] = data;
+        if (++ num === len) {
+          resolve(res);
+        }
+      }, reject);
     }
   });
 };

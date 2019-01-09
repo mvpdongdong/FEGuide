@@ -218,3 +218,46 @@ babel工作流程分为三个部分：
 
 ### 浏览器工作原理
 参考文章：[图解浏览器的基本工作原理](https://zhuanlan.zhihu.com/p/47407398)、[从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理](https://juejin.im/post/5a6547d0f265da3e283a1df7)
+
+### javascript递归理解
+
+- 寻找解决问题最简单方式
+- 不考虑函数调用自身时执行过程是否正确，这不是考虑递归的有用方法，要相信返回时正确的
+- 不要想递归程序为一系列的执行步骤，并在头脑中重建执行树，对于一些问题这将非常复杂
+
+```js
+//嵌套数组元素求和
+function sum(arr) {
+  let result = 0;
+  for (let i = 0; i < arr.length; i++) {
+    if (Array.isArray(arr[i])) {
+      result += sum(arr[i]);
+    } else {
+      result += arr[i];
+    }
+  }
+  return result;
+}
+
+console.log(sum([1,4,[5,3]])) //13
+```
+
+```js
+//在树结构中查找特定节点
+
+function find(node, value) {
+  if (node.value === value) {
+    return node;
+  }
+  for (let i = 0; i < node.children.length; i++) {
+    let found = find(node.children[i], value);
+    if (found !== null) {
+      return found;
+    }
+  }
+  return null;
+}
+
+```
+
+参考文章：[recursion should not be difficult](https://medium.freecodecamp.org/learn-recursion-in-10-minutes-e3262ac08a1)
