@@ -23,6 +23,13 @@ render () {
 
 在代码中调用 setState 函数之后，React 会将传入的参数对象与组件当前的状态合并，然后触发所谓的调和过程（Reconciliation）。经过调和过程，React 会以相对高效的方式根据新的状态构建 React 元素树并且着手重新渲染整个 UI 界面。在 React 得到元素树之后，React 会自动计算出新的树与老树的节点差异，然后根据差异对界面进行最小化重渲染。在差异计算算法中，React 能够相对精确地知道哪些位置发生了改变以及应该如何改变，这就保证了按需更新，而不是全部重新渲染。
 
+### setState到底是异步还是同步？
+
+- 如果是由React引发的事件处理（比如通过onClick引发的事件处理），调用setState不会同步更新this.state
+- 绕过React通过addEventListener直接添加的事件处理函数，还有通过setTimeout/setInterval产生的异步调用，则会同步更新this.state
+
+参考文章：[setState何时同步更新状态](https://zhuanlan.zhihu.com/p/26069727?utm_source=tuicool&utm_medium=referral)
+
 ### react 新版生命周期函数(react 16.4)
 ![react 新版生命周期函数](images/new_phases.png)
 参考文章：[新生命周期函数浅析及升级方案](https://juejin.im/post/5ae6cd96f265da0b9c106931)
@@ -323,8 +330,7 @@ creat-react-app Yeoman 等
 
 ### redux 有什么缺点
 
-- 一个组件所需要的数据，必须由父组件传过来，而不能像 flux 中直接从 store 取。
-- 当一个组件相关数据更新时，即使父组件不需要用到这个组件，父组件还是会重新 render，可能会有效率影响，或者需要写复杂的 shouldComponentUpdate 进行判断。
+参考文章：[redux 有什么缺点？](https://www.zhihu.com/question/263928256/answer/274963347)
 
 
 ### react 16.x版本的react fiber和 fiber reconciler解析
