@@ -467,3 +467,53 @@ function resolvePromise(p2, x, resolve, reject) {
 
 module.exports = Promise;
 ```
+### 最大子数列问题
+
+```js
+function dpMaximumSubarray(inputArray) {
+  let maxSum = -Infinity;
+  let currentSum = 0;
+
+  let maxStartIndex = 0;
+  let maxEndIndex = inputArray.length - 1;
+  let currentStartIndex = 0;
+
+  inputArray.forEach((currentNumber, currentIndex) => {
+    currentSum += currentNumber;
+
+    if (maxSum < currentSum) {
+      maxSum = currentSum;
+      maxStartIndex = currentStartIndex;
+      maxEndIndex = currentIndex;
+    }
+
+    if (currentSum < 0) {
+      currentSum = 0;
+      currentStartIndex = currentIndex + 1;
+    }
+  })
+
+  return inputArray.slice(maxStartIndex, maxEndIndex + 1);
+
+}
+
+var array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(dpMaximumSubarray(array)); //[4, -1, 2, 1]
+```
+
+### 洗牌算法(乱序数组)
+
+```js
+function fisherYates(originalArray) {
+  let array = originalArray.slice(0);
+
+  for (let i = array.length - 1; i > 0;i--) {
+    const randomIndex = Math.floor(Math.random() * (i + 1));
+    [array[randomIndex], array[i]] = [array[i], array[randomIndex]];
+  }
+
+  return array;
+}
+
+console.log(fisherYates([4, -1, 2, 1, -5, 4]));
+```
