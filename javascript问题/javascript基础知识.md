@@ -261,3 +261,7 @@ function find(node, value) {
 ```
 
 参考文章：[recursion should not be difficult](https://medium.freecodecamp.org/learn-recursion-in-10-minutes-e3262ac08a1)
+
+### 当你在浏览器中输入 google.com 并且按下回车之后发生了什么?
+
+参考文章：[当你在浏览器中输入 google.com 并且按下回车之后发生了什么？](https://github.com/skyline75489/what-happens-when-zh_CN)

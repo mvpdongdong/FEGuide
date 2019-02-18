@@ -601,3 +601,66 @@ function fisherYates(originalArray) {
 
 console.log(fisherYates([4, -1, 2, 1, -5, 4]));
 ```
+
+### 两个数不使用四则运算得出和
+
+```js
+const sum = (num1, num2) => {
+  if (num1) return num2;
+  if (num2) return num1;
+  const newNum1 = num1 ^ num2;
+  const newNum2 = (num1 & num2) << 1;
+  return sum(newNum1, newNum2);
+}
+```
+
+### 斐波那契数列
+
+```js
+//递归
+function fib(n) {
+  if (n < 2) return n;
+  return fib(n - 1) + fib(n - 2);
+}
+```
+
+```js
+//循环
+function fib(n) {
+  if (n < 2) return n;
+  let num1 = 0;
+  let num2 = 1;
+  for (let i = 2; i <= n; i++) {
+    let temp = num2;
+    num2 = num1 + num2;
+    num1 = temp;
+  }
+  return num2;
+}
+```
+
+### 最长递增子序列
+
+```js
+
+function lis(n) {
+  if (n.length === 0) return 0
+  // 创建一个和参数相同大小的数组，并填充值为 1
+  let array = new Array(n.length).fill(1)
+  // 从索引 1 开始遍历，因为数组已经所有都填充为 1 了
+  for (let i = 1; i < n.length; i++) {
+    // 从索引 0 遍历到 i
+    // 判断索引 i 上的值是否大于之前的值
+    for (let j = 0; j < i; j++) {
+      if (n[i] > n[j]) {
+        array[i] = Math.max(array[i], 1 + array[j])
+      }
+    }
+  }
+
+  return Math.max.apply(null, array);
+}
+
+console.log(lis([0, 3, 4, 17, 2, 8, 6, 10])) // 5
+
+```
