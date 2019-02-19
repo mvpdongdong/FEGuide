@@ -1,3 +1,57 @@
+### bind实现
+
+```js
+Function.prototype._bind = function (context) {
+  const args = [...arguments].slice(1);
+  const func = this;
+  function F() {
+    return func.apply(this instanceof func ? this : context, args.concat([...arguments]));
+  }
+  F.prototype = Object.create(func.prototype);
+  return F;
+}
+```
+
+### apply实现
+
+```js
+Function.prototype._apply = function (context) {
+  context = context || window;
+  context.fn = this;
+  let result;
+  if (arguments[1]) {
+    result = context.fn(...arguments[1]);
+  } else {
+    result = context.fn();
+  }
+  delete context.fn;
+  return result;
+}
+```
+
+### call实现
+
+```js
+Function.prototype._call = function (context) {
+  context = context || window;
+  context.fn = this;
+  const args = [...arguments].slice(1);
+  const result = context.fn(...args);
+  delete context.fn;
+  return result;
+}
+```
+
+### new的模拟实现
+
+```js
+function objectFactory (fun) {
+  const obj = Object.create(fun.prototype);
+  const res = fun.apply(obj, [...arguments].slice(1))
+  return Object.prototype.toString.call(res) === '[object Object]' ? res : obj;
+}
+```
+
 ### 函数节流实现
 
 ```js
@@ -220,51 +274,6 @@ const clone = parent => {
 当然,我们这个深克隆还不算完美,例如Buffer对象、Promise、Set、Map可能都需要我们做特殊处理，另外对于确保没有循环引用的对象，我们可以省去对循环引用的特殊处理，因为这很消耗时间，不过一个基本的深克隆函数我们已经实现了.
 
 深克隆完整实现: [面试官:请你实现一个深克隆](https://juejin.im/post/5abb55ee6fb9a028e33b7e0a)
-
-### bind实现
-
-```js
-Function.prototype._bind = function (context) {
-  var params = Array.prototype.slice.call(arguments, 1);
-  var func = this;
-  return function F () {
-    params = params.concat(Array.prototype.slice.call(arguments));
-    return func.apply(this instanceof F ? this : context, params);
-  };
-}
-
-```
-
-### apply实现
-
-```js
-Function.prototype.myApply = function (context) {
-  context = context || window;
-  context.fn = this;
-  var result;
-  if (arguments[1]) {
-    result = context.fn(...arguments[1]);
-  } else {
-    result = context.fn();
-  }
-  delete context.fn;
-  return result;
-}
-```
-
-### call实现
-
-```js
-Function.prototype.myCall = function (context) {
-  context = context || window;
-  context.fn = this;
-
-  var args = [...arguments].slice(1);
-  var result = context.fn(...args);
-  delete context.fn;
-  return result;
-}
-```
 
 ### 实现destructuringArray方法，达到如下效果
 ```js

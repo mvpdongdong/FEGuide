@@ -20,7 +20,7 @@ JavaScript 由以下三部分组成：
 
 -   数据封装类对象：Object、Array、Boolean、Number、String
 -   其他对象：Function、Arguments、Math、Date、RegExp、Error
--   ES6 新增对象：Symbol、Map、Set、Promises、Proxy、Reflect
+-   ES6 新增对象：Symbol、Map、Set、Promise、Proxy、Reflect
 
 ### 说几条写 JavaScript 的基本规范？
 
@@ -121,7 +121,7 @@ JavaScript 变量声明提升：
 原型：
 
 -   JavaScript 的所有对象中都包含了一个 [proto] 内部属性，这个属性所对应的就是该对象的原型
--   JavaScript 的函数对象，除了原型 [proto] 之外，还预置了 prototype 属性
+-   JavaScript 的函数也是一种对象，除了原型 [proto] 之外，还预置了 prototype 属性
 -   当函数对象作为构造函数创建实例时，该 prototype 属性值将被作为实例对象的原型 [proto]。
 
 原型链：
@@ -212,7 +212,7 @@ person2.sayName(); // steve
 
 alert(person1.sayName === person2.sayName); // true 共享同一个方法
 ```
-问题：无法为实例生成单独的属性。
+问题：无法为实例生成单独的属性, 不能初始化参数。
 
 4. 组合使用构造函数模式和原型模式
 
@@ -514,11 +514,11 @@ SubType.prototype.sayAge = function() {
 ```js
 class ColorPoint extends Point {
     constructor(x, y, color) {
-        super(x, y); // 调用父类的constructor(x, y)
-        this.color = color;
+      super(x, y); // 调用父类的constructor(x, y)
+      this.color = color;
     }
     toString() {
-        return this.color + ' ' + super.toString(); // 调用父类的toString()
+      return this.color + ' ' + super.toString(); // 调用父类的toString()
     }
 }
 ```
@@ -534,11 +534,6 @@ class ColorPoint extends Point {
 - 借用构造函数：为了解决传参问题，采用在子类中调用父类构造函数的方法。
 - 原型式：可以在不必预先定义构造函数的情况下实现继承，本质是执行对给定对象的浅复制。
 - 寄生组合式：巧妙利用原型式继承解决原型链中的第二个问题，是基于类型继承的最好方式。
-
-### Javascript 作用链域?
-
--   全局函数无法查看局部函数的内部细节，但局部函数可以查看其上层的函数细节，直至全局细节
--   如果当前作用域没有找到属性或方法，会向上层作用域查找，直至全局函数，这种形式就是作用域链
 
 ### 谈谈 this 对象的理解
 

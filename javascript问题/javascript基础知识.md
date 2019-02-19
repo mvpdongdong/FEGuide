@@ -7,14 +7,39 @@
 ### == 隐式转换步骤
 ![隐式转换步骤](../imgs/JavaScript==符号运算过程.jpg)
 
+
+### Javascript深入系列
+参考文章：[JavaScript深入系列15篇正式完结！](https://juejin.im/post/59278e312f301e006c2e1510)
+
+### JavaScript专题系列
+参考文章：[JavaScript专题系列20篇正式完结！](https://juejin.im/post/59eff1fb6fb9a044ff30a942)
+
+### JavaScript的作用域概念
+
+- 作用域是指程序源代码中定义变量的区域；
+- 作用域规定了如何查找变量的规则，也就是确定了代码中对变量的访问权限；
+- JavaScript的作用域是词法作用域，也就是静态作用域，函数在定义时就确定了自己的作用域；
+- 当一个函数或块在另一个函数或块中时，就发生了作用域嵌套，在当前作用域查找不到变量就会继续在外层嵌套的作用域中查找，直到找到变量或抵达最外层作用域（全局作用域），这就是作用域链。
+
 ### JavaScript执行上下文
+
+- 执行上下文包含：变量对象（函数中是活动对象）、作用域链、this
+- 执行上下文栈用于管理执行上下文
+
 参考文章：[JavaScript深入之执行上下文](https://github.com/mqyqingfeng/Blog/issues/8)、[理解 Javascript 执行上下文和执行栈](https://juejin.im/post/5bdfd3e151882516c6432c32)
 
 ### JavaScript深入之闭包
+
+- 闭包是能访问自由变量的函数
+- 自由变量是指在函数中使用的，但既不是函数参数也不是函数的局部变量的变量
+- 闭包 = 函数 + 函数能够访问的自由变量
+- 即使创建闭包的上下文已经销毁，依然能够通过闭包所在执行上下文的作用域链访问父级作用域
+
 参考文章：[JavaScript深入之闭包](https://github.com/mqyqingfeng/Blog/issues/9)
 
 ### JavaScript面向对象深入理解
 请参考文章：[JavaScript 面向对象深入理解](https://buptsteve.github.io/blog/2016/03/17/005.js-oo-chapter6/)
+
 ### JavaScript判断this指向
 现在我们可以根据优先级来判断函数在某个调用位置应用的是哪条规则。可以按照下面的顺序来进行判断：
 1. 函数是否在new中调用(new绑定)?如果是的话this绑定的是新创建的对象。
