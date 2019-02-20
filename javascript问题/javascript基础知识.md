@@ -105,9 +105,41 @@ var bar = foo()
 
 请参考： [浅谈程序语言的垃圾回收机制](https://mp.weixin.qq.com/s?__biz=MzU5NzEwMDQyNA==&mid=2247483808&idx=1&sn=06dcf160978dd022a4e5c5c99ad1b073&chksm=fe59d347c92e5a513f42bb071d97247e384d6a3d94cbcb8f03fb200171aa5aa0af1235e910ca&mpshare=1&scene=22&srcid=0824EHt1if6Nq61TpEDriDvj%23rd)
 
-### 浏览器javascript运行机制
+### 浏览器中的javascript运行机制(event loop)
 
-请参考：[从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理](https://juejin.im/post/5a6547d0f265da3e283a1df7)
+![浏览器中的Eventloop](../imgs/event_loop.png)
+
+- 主线程运行的时候会生成堆（heap）和栈（stack）；
+- js 从上到下执行代码，将其中的同步任务按照执行顺序排列到执行栈中；；
+- 当程序调用外部的 API 时，比如 ajax、setTimeout 等，会将此类异步任务挂起，继续执行执行栈中的任务，等异步任务返回结果后，再按照执行顺序排列到事件队列中（主线程之外，事件触发线程管理着一个事件队列，只要异步任务有了运行结果，就在事件队列之中放置一个事件）；
+- 主线程先将执行栈中的同步任务清空，然后检查事件队列中是否有任务，如果有，就将第一个事件对应的回调推到执行栈中执行，若在执行过程中遇到异步任务，则继续将这个异步任务排列到事件队列中。
+- 主线程每次将执行栈清空后，就去事件队列中检查是否有任务，如果有，就每次取出一个推到执行栈中执行，这个过程是循环往复的... ...，这个过程被称为“Event Loop 事件循环”
+
+事件循环进阶：macrotask与microtask
+
+- macrotask（又称之为宏任务），可以理解是每次执行栈执行的代码就是一个宏任务（包括每次从事件队列中获取一个事件回调并放到执行栈中执行）
+  - 每一个task会从头到尾将这个任务执行完毕，不会执行其它
+  - 浏览器为了能够使得JS内部task与DOM任务能够有序的执行，会在一个task执行结束后，在下一个 task 执行开始前，对页面进行重新渲染(task->渲染->task->...）
+- microtask（又称为微任务），可以理解是在当前 task 执行结束后立即执行的任务
+  - 也就是说，在当前task任务后，下一个task之前，在渲染之前
+  - 所以它的响应速度相比setTimeout（setTimeout是task）会更快，因为无需等渲染
+  - 也就是说，在某一个macrotask执行完后，就会将在它执行期间产生的所有microtask都执行完毕（在渲染前）
+
+分别很么样的场景会形成macrotask和microtask呢？
+  - macrotask：主代码块，setTimeout，setInterval等（可以看到，事件队列中的每一个事件都是一个macrotask）
+  - microtask：Promise，process.nextTick等
+
+所以，总结下运行机制：
+  - 执行一个宏任务（栈中没有就从事件队列中获取）
+  - 执行过程中如果遇到微任务，就将它添加到微任务的任务队列中
+  - 宏任务执行完毕后，立即执行当前微任务队列中的所有微任务（依次执行）
+  - 当前宏任务执行完毕，开始检查渲染，然后GUI线程接管渲染
+  - 渲染完毕后，JS线程继续接管，开始下一个宏任务（从事件队列中获取）
+如下图：
+
+![浏览器中的Eventloop](../imgs/macrotask_microtask.png)
+
+参考地址:[从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理](https://juejin.im/post/5a6547d0f265da3e283a1df7)、[Event Loop 这个循环你晓得么？(附 GIF 详解)-饿了么前端](https://zhuanlan.zhihu.com/p/41543963)、[深入浏览器的事件循环](https://zhuanlan.zhihu.com/p/45111890)、[(译)Tasks, microtasks, queues and schedules](https://hongfanqie.github.io/tasks-microtasks-queues-and-schedules/)
 
 ### 前端跨域方法总结
 
@@ -132,18 +164,6 @@ var bar = foo()
 ### async\await原理
 
 参考文章：[8张图让你一步步看清 async/await 和 promise 的执行顺序](https://segmentfault.com/a/1190000017224799?_ea=5345525)、[「译」更快的 async 函数和 promises](https://v8.js.cn/blog/fast-async/)、[关于 async 函数的理解](https://juejin.im/post/5c0f73e4518825689f1b5e6c?utm_source=gold_browser_extension)
-
-### 浏览器中的 Event Loop
-
-![浏览器中的Eventloop](../imgs/eventLoop.jpg)
-
--   主线程运行的时候会生成堆（heap）和栈（stack）；
--   js 从上到下解析方法，将其中的同步任务按照执行顺序排列到执行栈中；
--   当程序调用外部的 API 时，比如 ajax、setTimeout 等，会将此类异步任务挂起，继续执行执行栈中的任务，等异步任务返回结果后，再按照执行顺序排列到事件队列中；
--   主线程先将执行栈中的同步任务清空，然后检查事件队列中是否有任务，如果有，就将第一个事件对应的回调推到执行栈中执行，若在执行过程中遇到异步任务，则继续将这个异步任务排列到事件队列中。
--   主线程每次将执行栈清空后，就去事件队列中检查是否有任务，如果有，就每次取出一个推到执行栈中执行，这个过程是循环往复的... ...，这个过程被称为“Event Loop 事件循环”
-
-参考地址:[Event Loop 这个循环你晓得么？(附 GIF 详解)-饿了么前端](https://zhuanlan.zhihu.com/p/41543963)、[深入浏览器的事件循环](https://zhuanlan.zhihu.com/p/45111890)、[(译)Tasks, microtasks, queues and schedules](https://hongfanqie.github.io/tasks-microtasks-queues-and-schedules/)
 
 ### 观察者模式和发布订阅模式区别
 
