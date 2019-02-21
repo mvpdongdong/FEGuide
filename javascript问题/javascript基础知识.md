@@ -141,33 +141,53 @@ var bar = foo()
 
 参考地址:[从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理](https://juejin.im/post/5a6547d0f265da3e283a1df7)、[Event Loop 这个循环你晓得么？(附 GIF 详解)-饿了么前端](https://zhuanlan.zhihu.com/p/41543963)、[深入浏览器的事件循环](https://zhuanlan.zhihu.com/p/45111890)、[(译)Tasks, microtasks, queues and schedules](https://hongfanqie.github.io/tasks-microtasks-queues-and-schedules/)
 
+### 当你在浏览器中输入 google.com 并且按下回车之后发生了什么?
+
+参考文章：[当你在浏览器中输入 google.com 并且按下回车之后发生了什么？](https://github.com/skyline75489/what-happens-when-zh_CN)
+
+### 浏览器工作原理
+参考文章：[图解浏览器的基本工作原理](https://zhuanlan.zhihu.com/p/47407398)、[从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理](https://juejin.im/post/5a6547d0f265da3e283a1df7)、[现代浏览器探秘（part3）：渲染](https://juejin.im/post/5c3d870d6fb9a049e12a764c)
+
 ### 前端跨域方法总结
 
 请参考：[前端跨域方法总结](https://juejin.im/post/5bcc297c51882535074a695e)、[前端常见跨域解决方案（全）](https://segmentfault.com/a/1190000011145364)、[跨域实践二三事](https://github.com/MuYunyun/blog/issues/13)
-
-### Promise
-
-请参考：[面试精选之Promise](https://juejin.im/post/5b31a4b7f265da595725f322)
 
 ### Fetch和XMLHttpRequest区别
 
 参考文章：[传统 Ajax 已死，Fetch 永生](https://github.com/camsong/blog/issues/2)
 
-### 尾递归调用
-递归本质上是一种循环操作。纯粹的函数式编程语言没有循环操作命令，所有的循环都用递归实现，这就是为什么尾递归对这些语言极其重要。对于其他支持“尾调用优化”的语言（比如 Lua，ES6），只需要知道循环可以用递归代替，而一旦使用递归，就最好使用尾递归
-参考文章：[尾递归优化](http://es6.ruanyifeng.com/#docs/function#尾调用优化)
+### Promise
 
-### Promise、async\await区别
-
-参考文章：[6 Reasons Why JavaScript’s Async/Await Blows Promises Away (Tutorial)](https://hackernoon.com/6-reasons-why-javascripts-async-await-blows-promises-away-tutorial-c7ec10518dd9)
+请参考：[面试精选之Promise](https://juejin.im/post/5b31a4b7f265da595725f322)
 
 ### async\await原理
 
-参考文章：[8张图让你一步步看清 async/await 和 promise 的执行顺序](https://segmentfault.com/a/1190000017224799?_ea=5345525)、[「译」更快的 async 函数和 promises](https://v8.js.cn/blog/fast-async/)、[关于 async 函数的理解](https://juejin.im/post/5c0f73e4518825689f1b5e6c?utm_source=gold_browser_extension)
+async用法
+
+- async函数必定返回promise。如果async函数返回值不是promise，则会通过Promise.resolve()包装成promise;如果显示返回promise，那就以你返回的promise为准；
+- 在语义上要理解，async表示函数内部有异步操作；
+- 一般 await 关键字要在 async 关键字函数的内部，await 写在外面会报错；
+
+await用法
+
+- await后面的等式结果分为两种情况：非promise、promise
+- 当等式结果是非promise时，则await会阻塞后面的代码，先执行async函数外面的同步代码，等同步代码执行完毕，再返回async内部，把这个非promise值，作为await表达式的结果
+- 当等式结果是promise时，则await也会阻塞后面的代码，先执行async函数外面的同步代码，等promise的状态变为fufilled时，再返回async函数内部，把这个promise中resove的值，作为await表达式的结果
+
+参考文章：[「译」更快的 async 函数和 promises](https://v8.js.cn/blog/fast-async/)、[关于 async 函数的理解](https://juejin.im/post/5c0f73e4518825689f1b5e6c?utm_source=gold_browser_extension)、[8张图让你一步步看清 async/await 和 promise 的执行顺序](https://segmentfault.com/a/1190000017224799?_ea=5345525)
+
+### Promise、async\await区别
+
+- async\await写法比promise更简洁，不需要向then函数中传递函数，定义变量等多余操作，可读性好；
+- async\await通过try/catch就能捕获错误，promise需要使用catch方法并传入捕获处理函数
+- 错误堆栈信息Error stacks，promise通过then函数链接，如果某一级出错，错误信息无法指明出错的地方，async/await写法下错误堆栈信息能够指明错误代码行数等信息
+- async\await更容易调试，写法像同步代码可以一行一行调试代码，反观promise是then链接，不好调试
+
+参考文章：[ES6 Async/Await 完爆Promise的6个原因](https://www.jianshu.com/p/3059a2d0f3da)
 
 ### 观察者模式和发布订阅模式区别
 
-1、观察者模式包含目标对象(Subject)、观察者对象(Observer)，Subject收集一系列Observer，当有时间发生时，调用Observer自身的方法，触发回调，所以Subject、Observer互相依赖；
+1、观察者模式包含目标对象(Subject)、观察者对象(Observer)，Subject收集一系列Observer，当有事件发生时，调用Observer自身的方法，触发回调，所以Subject、Observer互相依赖；
 2、发布订阅模式中有一个事件调度中心PubSub对象，通过事件名称注册一系列订阅函数，当事件发生时，触发相应的订阅函数。
 参考文章：[谈谈观察者模式和发布订阅模式](https://www.jianshu.com/p/69bfe35229ef)、[观察者模式 vs 发布订阅模式](https://juejin.im/post/5c0a9d9bf265da612909ff1b)
 
@@ -295,9 +315,6 @@ babel工作流程分为三个部分：
 
 参考文章：[Javascript 高性能动画与页面渲染](https://juejin.im/entry/58b0187c1b69e60058a09faf)
 
-### 浏览器工作原理
-参考文章：[图解浏览器的基本工作原理](https://zhuanlan.zhihu.com/p/47407398)、[从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理](https://juejin.im/post/5a6547d0f265da3e283a1df7)、[现代浏览器探秘（part3）：渲染](https://juejin.im/post/5c3d870d6fb9a049e12a764c)
-
 ### javascript递归理解
 
 - 寻找解决问题最简单方式
@@ -341,6 +358,6 @@ function find(node, value) {
 
 参考文章：[recursion should not be difficult](https://medium.freecodecamp.org/learn-recursion-in-10-minutes-e3262ac08a1)
 
-### 当你在浏览器中输入 google.com 并且按下回车之后发生了什么?
-
-参考文章：[当你在浏览器中输入 google.com 并且按下回车之后发生了什么？](https://github.com/skyline75489/what-happens-when-zh_CN)
+### 尾递归调用
+递归本质上是一种循环操作。纯粹的函数式编程语言没有循环操作命令，所有的循环都用递归实现，这就是为什么尾递归对这些语言极其重要。对于其他支持“尾调用优化”的语言（比如 Lua，ES6），只需要知道循环可以用递归代替，而一旦使用递归，就最好使用尾递归
+参考文章：[尾递归优化](http://es6.ruanyifeng.com/#docs/function#尾调用优化)
