@@ -306,7 +306,7 @@ babel工作流程分为三个部分：
 创建独立渲染层方式：
 - 拥有translate3D属性元素
 - animation动画涉及opacity或者transform变化
-- 开清硬件加速并拥有filter属性的元素
+- 开启硬件加速并拥有filter属性的元素
 - 有一个后代元素是独立的layer
 - 元素的相邻元素是独立layer
 - 3D上下文canvas或者开启硬件加速的2Dcanvas

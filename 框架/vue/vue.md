@@ -21,10 +21,10 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 
 答：总共分为 8 个阶段创建前/后，载入前/后，更新前/后，销毁前/后。
 
-- 创建前/后： 在 beforeCreate 阶段，vue 实例的挂载元素 el 还没有。
-- 载入前/后：在 beforeMount 阶段，vue 实例的$el 和 data 都初始化了，但还是挂载之前为虚拟的 dom 节点，data.message 还未替换。在 mounted 阶段，vue 实例挂载完成，data.message 成功渲染。
+- 创建前/后： 在 beforeCreate 阶段，在钩子函数中无法访问state、props，在created中能够访问state、props。
+- 载入前/后：在 beforeMount 阶段，vue实例的render函数已经可用。在 mounted 阶段，vue 实例调用_render方法去生成虚拟DOM树，然后调用_update方法将虚拟DOM映射为真实DOM。
 - 更新前/后：当 data 变化时，会触发 beforeUpdate 和 updated 方法。
-- 销毁前/后：在执行 destroy 方法后，对 data 的改变不会再触发周期函数，说明此时 vue 实例已经解除了事件监听以及和 dom 的绑定，但是 dom 结构依然存在
+- 销毁前/后：在执行 destroy 方法后，会执行beforeDestroy钩子函数，然后会对vue实例的事件监听、vdom等进行删除解绑，然后执行destroyed钩子函数，但是页面 dom 结构依然存在，需要手动调用原生dom api进行删除
 
 ### 组件之间的传值？
 
