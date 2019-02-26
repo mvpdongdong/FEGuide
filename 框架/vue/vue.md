@@ -10,12 +10,26 @@ ViewModel 通过双向数据绑定把 View 层和 Model 层连接了起来，而
 
 mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc 中 Controller 演变成 mvvm 中的 viewModel。mvvm 主要解决了 mvc 中大量的 DOM 操作使页面渲染性能降低，加载速度变慢，影响用户体验。和当 Model 频繁发生变化，开发者需要主动更新到 View 。
 
+## vue 相关
+
 ### vue 的优点是什么？
 
 - 低耦合。视图（View）可以独立于 Model 变化和修改，一个 ViewModel 可以绑定到不同的"View"上，当 View 变化的时候 Model 可以不变，当 Model 变化的时候 View 也可以不变。
 - 可重用性。你可以把一些视图逻辑放在一个 ViewModel 里面，让很多 view 重用这段视图逻辑。
 - 独立开发。开发人员可以专注于业务逻辑和数据的开发（ViewModel），设计人员可以专注于页面设计，使用 Expression Blend 可以很容易设计界面并生成 xml 代码。
 - 可测试。界面素来是比较难于测试的，而现在测试可以针对 ViewModel 来写。
+
+### vue 的渲染流程
+
+  1. ```new Vue()``` 初始化vue实例vm，在构造函数内部调用_init方法，在_init方法中会初始化实例属性和方法并触发```beforeCreate``` 钩子函数，随后最关键的是利用```Object.defineProperty```方法劫持数据建立响应式系统并触发```created```钩子函数；
+  2. 接着，执行```vm.$mount```方法，将vm挂载到dom节点上，在这个过程中将模板编译成可用的```render```函数，之后就触发```beforeMount```钩子函数；
+  3. 执行```render```函数返回虚拟Dom树，然后利用```__patch__```方法将虚拟Dom节点转换为真实的Dom对象，并挂载到页面中显示完成渲染，随之执行```mounted```钩子函数;
+
+### vue 更新渲染流程
+
+1. 在执行```vm.$mount```过程中会创建一个渲染Watcher对象；
+2. 由于对vm数据劫持，在首次渲染get数据的过程中执行```Object.defineProperty```中的属性getter方法，会为对应响应属性dep对象中加入渲染Watcher对象；
+3. 当对响应式数据做set操作(改变值)时，就会执行setter函数，执行```dep.notify()```,触发dep中的Watcher对象执行渲染回调触发更新；
 
 ### 请详细说下你对 vue 生命周期的理解？
 
@@ -26,48 +40,16 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 - 更新前/后：当 data 变化时，会触发 beforeUpdate 和 updated 方法。
 - 销毁前/后：在执行 destroy 方法后，会执行beforeDestroy钩子函数，然后会对vue实例的事件监听、vdom等进行删除解绑，然后执行destroyed钩子函数，但是页面 dom 结构依然存在，需要手动调用原生dom api进行删除
 
-### 组件之间的传值？
+### 组件之间的通信？
 
-1. 父组件与子组件传值
-
-```js
-//父组件通过标签上面定义传值
-<template>
-    <Main :obj="data"></Main>
-</template>
-<script>
-    //引入子组件
-    import Main form "./main"
-
-    exprot default{
-        name:"parent",
-        data(){
-            return {
-                data:"我要向子组件传递数据"
-            }
-        },
-        //初始化组件
-        components:{
-            Main
-        }
-    }
-</script>
-
-
-//子组件通过props方法接受数据
-<template>
-    <div>{{data}}</div>
-</template>
-<script>
-    exprot default{
-        name:"son",
-        //接受父组件传值
-        props:["data"]
-    }
-</script>
-```
-
-2. 子组件向父组件传递数据
+- prop，父组件通过prop向子组件传递参数；
+- ```$emit```，子组件通过在内部```$emit```事件,将数据传递给父组件绑定的事件回调函数；
+- .sync修饰符，在有些情况下，我们可能需要对一个 prop 进行“双向绑定”。不幸的是，真正的双向绑定会带来维护上的问题，因为子组件可以修改父组件，且在父组件和子组件都没有明显的改动来源。通过.sync属性修饰符，子组件通过调用```this.$emit('update:propertyName', val)```来可以修改 prop ；
+- ```$attrs``` 和 ```$listeners```
+- ```provide``` / ```inject```
+- EventBus中央事件总线
+- 通过```$parent```、```$children```对象来访问组件实例中的方法和数据
+- vuex 官方推荐的，Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。
 
 参考文章：[Vue.js 父子组件通信的十种方式](https://juejin.im/post/5bd18c72e51d455e3f6e4334)、[Vue.js 父子组件通信的十种方式](https://juejin.im/post/5bd97e7c6fb9a022852a71cf)
 
@@ -99,9 +81,26 @@ vue.js 是采用数据劫持结合发布者-订阅者模式的方式，通过 Ob
 
 第四步：MVVM 作为数据绑定的入口，整合 Observer、Compile 和 Watcher 三者，通过 Observer 来监听自己的 model 数据变化，通过 Compile 来解析编译模板指令，最终利用 Watcher 搭起 Observer 和 Compile 之间的通信桥梁，达到数据变化 -> 视图更新；视图交互变化(input) -> 数据 model 变更的双向绑定效果。
 
+## vue-router 相关
+
 ### active-class 是哪个组件的属性？
 
 vue-router 模块的 router-link 组件。
+
+### vue-router 有哪几种导航钩子?
+
+三种
+
+- 全局导航钩子
+  - router.beforeEach(to, from, next),
+  - router.beforeResolve(to, from, next),
+  - router.afterEach(to, from ,next)
+- 组件内钩子
+  - beforeRouteEnter,
+  - beforeRouteUpdate,
+  - beforeRouteLeave
+- 单独路由独享组件
+  - beforeEnter
 
 ### 嵌套路由怎么定义？
 
@@ -172,6 +171,8 @@ import home from '../../common/home.vue'
 const home = r => require.ensure( [], () => r (require('../../common/home.vue')))
 ```
 
+## vuex 相关
+
 ### vuex 是什么？怎么使用？哪种功能场景使用它？
 
 vue 框架中状态管理。在 main.js 引入 store，注入。新建了一个目录 store，….. export 。场景有：单页应用中，组件之间的状态。音乐播放、登录状态、加入购物车
@@ -189,23 +190,6 @@ export default new vuex.store({
 import store from './store'
 ...
 ```
-
-### vue-router 有哪几种导航钩子?
-
-三种
-
-- 全局导航钩子
-  - router.beforeEach(to, from, next),
-  - router.beforeResolve(to, from, next),
-  - router.afterEach(to, from ,next)
-- 组件内钩子
-  - beforeRouteEnter,
-  - beforeRouteUpdate,
-  - beforeRouteLeave
-- 单独路由独享组件
-  - beforeEnter
-
-## vuex 相关
 
 ### vuex 有哪几种属性
 
