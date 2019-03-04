@@ -19,6 +19,12 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 - 独立开发。开发人员可以专注于业务逻辑和数据的开发（ViewModel），设计人员可以专注于页面设计，使用 Expression Blend 可以很容易设计界面并生成 xml 代码。
 - 可测试。界面素来是比较难于测试的，而现在测试可以针对 ViewModel 来写。
 
+### vue 响应式原理
+
+当一个Vue实例创建时，vue会遍历data选项的属性，用 Object.defineProperty 将它们转为getter/setter并且在内部追踪相关依赖，在属性被访问和修改时通知变化。每个组件实例都有相应的渲染watcher程序实例，它会在组件渲染的过程中把属性记录为依赖，之后当依赖项的setter被调用时，会通知watcher重新计算，从而致使它关联的组件得以更新
+
+![vue响应式原理示意图.jpg](./imgs/vue响应式原理示意图.jpg)
+
 ### vue 的渲染流程
 
   1. ```new Vue()``` 初始化vue实例vm，在构造函数内部调用_init方法，在_init方法中会初始化实例属性和方法并触发```beforeCreate``` 钩子函数，随后最关键的是利用```Object.defineProperty```方法劫持数据建立响应式系统并触发```created```钩子函数；
@@ -82,6 +88,24 @@ vue.js 是采用数据劫持结合发布者-订阅者模式的方式，通过 Ob
 第四步：MVVM 作为数据绑定的入口，整合 Observer、Compile 和 Watcher 三者，通过 Observer 来监听自己的 model 数据变化，通过 Compile 来解析编译模板指令，最终利用 Watcher 搭起 Observer 和 Compile 之间的通信桥梁，达到数据变化 -> 视图更新；视图交互变化(input) -> 数据 model 变更的双向绑定效果。
 
 ## vue-router 相关
+
+### vue-router 运行原理
+
+1. 定义VueRouter构造函数，VueRouter函数定义静态方法install，Vue.use安装VueRouter
+2. 在安装VueRouter过程中，为组件实例添加```$route```、```$router```属性，全局注册```router-view```和```router-link```组件，并全局mixin，为根vue实例配置beforeCreate钩子，钩子中执行```this._router.init```方法
+3. ```this._router```就是```new VueRouter(config)```生成的实例，构造函数会根据路由配置确定hash模式还是history模式，从而初始化相应的history实例
+4. 根vue实例运行beforeCreate钩子执行```this._router.init```方法，这个方法执行```this.history.transitionTo```方法用于路由切换
+5. 根据目标页面路径匹配出相应的路由组件列表，和当前页面路径路由组件列表作比较，获得updated,deactivated,
+activated路由组件队列
+6. 根据上述队列，按顺序执行导航守卫钩子：
+    1. 在失活的组件里调用离开守卫。
+    2. 调用全局的 beforeEach 守卫。
+    3. 在重用的组件里调用 beforeRouteUpdate 守卫。
+    4. 在激活的路由配置里调用 beforeEnter。
+    5. 解析异步路由组件。
+    6. 在被激活的组件里调用 beforeRouteEnter。
+    7. 调用全局的 beforeResolve 守卫
+    8. 调用全局的 afterEach 钩子。
 
 ### active-class 是哪个组件的属性？
 
@@ -193,18 +217,18 @@ import store from './store'
 
 ### vuex 有哪几种属性
 
-有 5 种，分别是 state、getter、mutation、action、module
+有 5 种，分别是 state、getters、mutations、actions、modules
 
 ### vuex 的 store 特性是什么
 
 - vuex 就是一个仓库，仓库里放了很多对象。其中 state 就是数据源存放地，对应于一般 vue 对象里面的 data
-- state 里面存放的数据是响应式的，vue 组件从 store 读取数据，若是 store 中的数据发生改变，依赖这相数据的组件也会发生更新
+- state 里面存放的数据是响应式的，vue 组件从 store 读取数据，若是 store 中的数据发生改变，依赖store中的数据的组件也会发生更新
 - 它通过 mapState 把全局的 state 和 getters 映射到当前组件的 computed 计算属性
 
 ### vuex 的 getter 特性是什么
 
 - getter 可以对 state 进行计算操作，它就是 store 的计算属性
-- 虽然在组件内也可以做计算属性，但是 getters 可以在多给件之间复用
+- 虽然在组件内也可以做计算属性，但是 getters 可以在多组件之间复用
 - 如果一个状态只在一个组件内使用，是可以不用 getters
 
 ### vuex 的 mutation 特性是什么
@@ -228,32 +252,34 @@ import store from './store'
 
 vuex 仅仅是作为 vue 的一个插件而存在，不像 Redux,MobX 等库可以应用于所有框架，vuex 只能使用在 vue 上，很大的程度是因为其高度依赖于 vue 的 computed 依赖检测系统以及其插件系统，
 
-vuex 整体思想诞生于 flux,可其的实现方式完完全全的使用了 vue 自身的响应式设计，依赖监听、依赖收集都属于 vue 对对象 Property set get 方法的代理劫持。最后一句话结束 vuex 工作原理，vuex 中的 store 本质就是没有 template 的隐藏着的 vue 组件；
+vuex 整体思想诞生于 flux,可其的实现方式完完全全的使用了 vue 自身的响应式设计，依赖监听、依赖收集都属于 vue 对象 Property set get 方法的代理劫持。vuex 中的 store 本质就是没有 template 的隐藏着的 vue 组件；
 
 ### 使用 Vuex 只需执行 Vue.use(Vuex)，并在 Vue 的配置中传入一个 store 对象的示例，store 是如何实现注入的？[美团](https://tech.meituan.com/vuex_code_analysis.html)
 
-Vue.use(Vuex) 方法执行的是 install 方法，它实现了 Vue 实例对象的 init 方法封装和注入，使传入的 store 对象被设置到 Vue 上下文环境的$store 中。因此在 Vue Component 任意地方都能够通过 this.$store 访问到该 store。
+Vue.use(Vuex) 方法执行的是 install 方法，它实现了 Vue 实例对象的 init 方法封装和注入，使传入的 store 对象被设置到 Vue 上下文环境的 ```$store``` 中。因此在 Vue Component 任意地方都能够通过 this.$store 访问到该 store。
 
 ### state 内部支持模块配置和模块嵌套，如何实现的？[美团](https://tech.meituan.com/vuex_code_analysis.html)
 
 在 store 构造方法中有 makeLocalContext 方法，所有 module 都会有一个 local context，根据配置时的 path 进行匹配。所以执行如 dispatch('submitOrder', payload)这类 action 时，默认的拿到都是 module 的 local state，如果要访问最外层或者是其他 module 的 state，只能从 rootState 按照 path 路径逐步进行访问。
 
-### 在执行 dispatch 触发 action(commit 同理)的时候，只需传入(type, payload)，action 执行函数中第一个参数 store 从哪里获取的？[美团](https://tech.meituan.com/vuex_code_analysis.html)
+### 在执行 dispatch 触发 action(commit 同理)的时候，只需传入(type, payload)，action 执行函数中第一个参数 context 从哪里获取的？[美团](https://tech.meituan.com/vuex_code_analysis.html)
 
-store 初始化时，所有配置的 action 和 mutation 以及 getters 均被封装过。在执行如 dispatch('submitOrder', payload)的时候，actions 中 type 为 submitOrder 的所有处理方法都是被封装后的，其第一个参数为当前的 store 对象，所以能够获取到 { dispatch, commit, state, rootState } 等数据。
+store 初始化时，所有配置的 action 和 mutation 以及 getters 均被封装过。在执行如 dispatch('submitOrder', payload)的时候，actions 中 type 为 submitOrder 的所有处理方法都是被封装后的，其第一个参数为 context 对象:
+```js
+{
+  state,      // 等同于 `store.state`，若在模块中则为局部状态local.state
+  rootState,  // 等同于 `store.state`，只存在于模块中
+  commit,     // 等同于 `store.commit`
+  dispatch,   // 等同于 `store.dispatch`
+  getters,    // 等同于 `store.getters`， 若在模块中则为局部local.getters
+  rootGetters // 等同于 `store.getters`，只存在于模块中
+}
+```
 
 ### Vuex 如何区分 state 是外部直接修改，还是通过 mutation 方法修改的？[美团](https://tech.meituan.com/vuex_code_analysis.html)
 
-Vuex 中修改 state 的唯一渠道就是执行 commit('xx', payload) 方法，其底层通过执行 this.\_withCommit(fn) 设置\_committing 标志变量为 true，然后才能修改 state，修改完毕还需要还原\_committing 变量。外部修改虽然能够直接修改 state，但是并没有修改\_committing 标志位，所以只要 watch 一下 state，state change 时判断是否\_committing 值为 true，即可判断修改的合法性。
+Vuex 中修改 state 的唯一渠道就是执行 commit('xx', payload) 方法，其底层通过执行 this._withCommit(fn) 设置 _committing 标志变量为 true，然后才能修改 state，修改完毕还需要还原_committing 变量。外部修改虽然能够直接修改 state，但是并没有修改 _committing 标志位，所以只要 watch 一下 state，state change 时判断是否_committing 值为 true，即可判断修改的合法性。
 
 ### 调试时的"时空穿梭"功能是如何实现的？[美团](https://tech.meituan.com/vuex_code_analysis.html)
 
-devtoolPlugin 中提供了此功能。因为 dev 模式下所有的 state change 都会被记录下来，'时空穿梭' 功能其实就是将当前的 state 替换为记录中某个时刻的 state 状态，利用 store.replaceState(targetState) 方法将执行 this.\_vm.state = state 实现。
-
-## axios
-
-### axios 是什么？怎么使用？描述使用它实现登录功能的流程
-
-axios 是请求后台资源的模块。 npm i axios -S
-
-如果发送的是跨域请求，需在配置文件中 config/index.js 进行配置
+devtoolPlugin 中提供了此功能。因为 dev 模式下所有的 state change 都会被记录下来，'时空穿梭' 功能其实就是将当前的 state 替换为记录中某个时刻的 state 状态，利用 store.replaceState(targetState) 方法将执行 this._vm.state = state 实现。
