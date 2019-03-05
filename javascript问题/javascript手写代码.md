@@ -171,11 +171,11 @@ console.log(_compose(...funs)(100))
 ```js
 //乞丐版本
 function deepClone (obj) {
-  var res = {};
   if (typeof obj !== 'object') return obj;
+  const res = {};
   if (Array.isArray(obj)) res = [];
 
-  for (var i in obj) {
+  for (let i in obj) {
     if (obj.hasOwnProperty(i)) {
       res[i] = deepClone(obj[i]);
     }
@@ -323,9 +323,9 @@ const get = (obj, ...args) =>
 ```js
 const deepFlatten = arr => [].concat(...arr.map(v => Array.isArray(v) ? deepFlatten(v) : v));
 
-function flatten(arr){
-  return arr.reduce(function(prev,item){
-    return prev.concat(Array.isArray(item)?flatten(item):item);
+function deepFlatten (arr) {
+  return arr.reduce((prev,item) => {
+    return prev.concat(Array.isArray(item) ? flatten(item) : item);
   },[]);
 }
 
@@ -381,6 +381,9 @@ function Promise (executor) {
   this.onRejectedCb = [];
 
   function resolve (value) {
+    if(value instanceof Promise) {
+      return value.then(resolve, reject);
+    }
     if (self.status === 'pending') {
       self.value = value;
       self.status = 'fulfilled';
@@ -476,27 +479,26 @@ Promise.prototype.catch = function (callback) {
   return this.then(null, callback);
 };
 
-Promise.all = function (items) {
-  let len = items.length;
-  let res = [];
-  let num = 0;
-  return new Promise(function (resolve, reject) {
-    for (let i = 0; i < len; i ++) {
-      items[i].then(function (data) {
-        res[i] = data;
-        if (++ num === len) {
+Promise.all = function (promises) {
+  const res = [];
+  const len = promises.length;
+  return new Promise (function (resolve, reject) {
+    promises.forEach(p => {
+      p.then(function (value) {
+        res.push(value);
+        if (res.length === len) {
           resolve(res);
         }
-      }, reject);
-    }
+      }, reject)
+    })
   });
 };
 
-Promise.race = function (items) {
-  return new Promise(function (resolve, reject) {
-    for (var i = 0; i < items.length; i ++) {
-      items[i].then(resolve, reject);
-    }
+Promise.race = function (promises) {
+  return new Promise (function (resolve, reject) {
+    promises.forEach(p => {
+      p.then(resolve, reject);
+    });
   });
 };
 
