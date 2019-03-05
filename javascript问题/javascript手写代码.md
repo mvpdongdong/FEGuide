@@ -173,6 +173,31 @@ console.log(_compose(...funs)(100))
 
 ```
 
+### curry 柯理化的实现
+
+```js
+function curry (fn, args) {
+  args = args || [];
+  return function () {
+    let _args = args.slice(0);
+    _args = _args.concat([...arguments]);
+    if (_args.length >= fn.length) {
+      return fn.apply(this, _args);
+    }
+    return curry.call(this, fn, _args);
+  };
+}
+
+var fn = curry(function(a, b, c) {
+    console.log([a, b, c]);
+});
+
+fn("a", "b", "c") // ["a", "b", "c"]
+fn("a", "b")("c") // ["a", "b", "c"]
+fn("a")("b")("c") // ["a", "b", "c"]
+fn("a")("b", "c") // ["a", "b", "c"]
+```
+
 ### 深克隆
 
 ```js
