@@ -198,6 +198,19 @@ fn("a")("b")("c") // ["a", "b", "c"]
 fn("a")("b", "c") // ["a", "b", "c"]
 ```
 
+### 偏函数partial
+
+```js
+function partial (fn) {
+  let args = [...arguments].slice(1);
+
+  return function () {
+    args = [...args, ...arguments];
+    return fn.apply(this, args);
+  }
+}
+```
+
 ### 深克隆
 
 ```js
