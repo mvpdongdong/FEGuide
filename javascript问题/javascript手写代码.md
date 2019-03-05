@@ -136,6 +136,13 @@ function compose () {
   var args = arguments;
   var start = arguments.length - 1;
 
+  if (args.length === 0) {
+    return arg => arg;
+  }
+  if (args.length === 1) {
+    return args[0];
+  }
+
   return function () {
     var i = start;
     var result = args[start].apply(this, arguments);
