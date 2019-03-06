@@ -4,7 +4,7 @@
 
 区别：
 
-- display:none;会让元素完全从渲染树中消失，渲染的时候不占据任何空间；visibility: hidden;不会让元素从渲染树消失，渲染师元素继续占据空间，只是内容不可见
+- display:none;会让元素完全从渲染树中消失，渲染的时候不占据任何空间；visibility: hidden;不会让元素从渲染树消失，渲染时元素继续占据空间，只是内容不可见
 - display: none;是非继承属性，子孙节点消失由于元素从渲染树消失造成，通过修改子孙节点属性无法显示；visibility:hidden;是继承属性，子孙节点消失由于继承了 hidden，通过设置 visibility: visible;可以让子孙节点显式
 - 修改常规流中元素的 display 通常会造成文档重排。修改 visibility 属性只会造成本元素的重绘
 - 读屏器不会读取 display: none;元素内容；会读取 visibility: hidden 元素内容
@@ -19,64 +19,15 @@ IE 条件注释：适用于[IE5, IE9]常见格式如下
 <!--[if IE 6]>
 Special instructions for IE 6 here
 <![endif]-->
-```
-
-选择器 hack：不同浏览器对选择器的支持不一样
-
-```css
-/***** Selector Hacks ******/
-
-/* IE6 and below */
-* html #uno  { color: red }
-
-/* IE7 */
-*:first-child+html #dos { color: red }
-
-/* IE7, FF, Saf, Opera  */
-html>body #tres { color: red }
-
-/* IE8, FF, Saf, Opera (Everything but IE 6,7) */
-html>/**/body #cuatro { color: red }
-
-/* Opera 9.27 and below, safari 2 */
-html:first-child #cinco { color: red }
-
-/* Safari 2-3 */
-html[xmlns*=""] body:last-child #seis { color: red }
-
-/* safari 3+, chrome 1+, opera9+, ff 3.5+ */
-body:nth-of-type(1) #siete { color: red }
-
-/* safari 3+, chrome 1+, opera9+, ff 3.5+ */
-body:first-of-type #ocho {  color: red }
-
-/* saf3+, chrome1+ */
-@media screen and (-webkit-min-device-pixel-ratio:0) {
- #diez  { color: red  }
-}
-
-/* iPhone / mobile webkit */
-@media screen and (max-device-width: 480px) {
- #veintiseis { color: red  }
-}
-
-/* Safari 2 - 3.1 */
-html[xmlns*=""]:root #trece  { color: red  }
-
-/* Safari 2 - 3.1, Opera 9.25 */
-*|html[xmlns*=""] #catorce { color: red  }
-
-/* Everything but IE6-8 */
-:root *> #quince { color: red  }
-
-/* IE7 */
-*+html #dieciocho {  color: red }
-
-/* Firefox only. 1+ */
-#veinticuatro,  x:-moz-any-link  { color: red }
-
-/* Firefox 3.0+ */
-#veinticinco,  x:-moz-any-link, x:default  { color: red  }
+<!--[if lte IE 6]>
+lte: less than or equal to 小于或等于
+<![endif]-->
+<!--[if gte IE 6]>
+gte: greater than or equal to 大于或等于
+<![endif]-->
+<!--[if !IE 6]>
+不等于IE 6
+<![endif]-->
 ```
 
 属性 hack：不同浏览器解析 bug 或方法
@@ -88,17 +39,8 @@ html[xmlns*=""]:root #trece  { color: red  }
 /* IE6, IE7 */
 #doce { *color: blue; /* or #color: blue */ }
 
-/* Everything but IE6 */
-#diecisiete { color/**/: blue }
-
-/* IE6, IE7, IE8 */
+/* IE */
 #diecinueve { color: blue\9; }
-
-/* IE7, IE8 */
-#veinte { color/*\**/: blue\9; }
-
-/* IE6, IE7 -- acts as an !important */
-#veintesiete { color: blue !ie; } /* string after ! can be anything */
 ```
 
 ### link 与 @import 的区别
@@ -128,16 +70,6 @@ html[xmlns*=""]:root #trece  { color: red  }
 - visibility
 - cursor
 
-### display,float,position 的关系
-
-- 如果 display 为 none，那么 position 和 float 都不起作用，这种情况下元素不产生框
-- 否则，如果 position 值为 absolute 或者 fixed，框就是绝对定位的，float 的计算值为 none，display 根据下面的表格进行调整
-- 否则，如果 float 不是 none，框是浮动的，display 根据下表进行调整
-- 否则，如果元素是根元素，display 根据下表进行调整
-- 其他情况下 display 的值为指定值 总结起来：绝对定位、浮动、根元素都需要调整 display
-
-  ![display关系](../imgs/display关系.png)
-
 ### 外边距折叠(collapsing margins)
 
 外边距重叠就是 margin-collapse
@@ -153,7 +85,7 @@ html[xmlns*=""]:root #trece  { color: red  }
 ### 介绍一下标准的 CSS 的盒子模型？低版本 IE 的盒子模型有什么不同的？
 
 - 有两种， IE 盒子模型、W3C 盒子模型；
-- 盒模型： 内容(content)、填充(padding)、边界(margin)、 边框(border)；
+- 盒模型： 内容(content)、填充(padding)、边界(margin)、边框(border)；
 - 标准(W3C)盒模型：元素宽度 = width + padding + border + margin
 - 怪异(IE)盒模型：元素宽度 = width + margin
 - 区 别： IE 的 content 部分把 border 和 padding 计算了进去;
@@ -165,11 +97,12 @@ html[xmlns*=""]:root #trece  { color: red  }
 - 类选择器（.myclassname）
 - 标签选择器（div, h1, p）
 - 相邻选择器（h1 + p）
-- 子选择器（ul > li）
+- 兄弟节点组合选择器 (h1 ~ p),跟在目标元素后面的所有匹配的元素
+- 子选择器（ul > li）,匹配直接子元素
 - 后代选择器（li a）
 - 通配符选择器（ \* ）
 - 属性选择器（a[rel = "external"]）
-- 伪类选择器（a:hover, li:nth-child）
+- 伪类选择器（a:hover, li:first-child, li:last-child, li:nth-child(n), ul:nth-of-type(n)）
 
 ### CSS3 新增伪类有那些？
 
@@ -302,10 +235,11 @@ html[xmlns*=""]:root #trece  { color: red  }
 
 ### display 有哪些值？说明他们的作用
 
-- block 象块类型元素一样显示。
-- none 缺省值。象行内元素类型一样显示。
-- inline-block 象行内元素一样显示，但其内容象块类型元素一样显示。
-- list-item 象块类型元素一样显示，并添加样式列表标记。
+- none 不显示，不占据空间，不在渲染树中。
+- block 像块类型元素一样显示。
+- inline 缺省值。像行内元素类型一样显示。
+- inline-block 像行内元素一样显示，但其内容像块类型元素一样显示。
+- list-item 像块类型元素一样显示，并添加样式列表标记。
 - table 此元素会作为块级表格来显示
 - inherit 规定应该从父元素继承 display 属性的值
 
@@ -329,7 +263,8 @@ html[xmlns*=""]:root #trece  { color: red  }
 - 渐变 background:linear-gradient(red, green, blue);
 - 阴影 box-shadow:3px 3px 3px rgba(0, 64, 128, 0.3);
 - 倒影 box-reflect: below 2px;
-- 文字装饰 text-stroke-color: red;
+- 文字阴影 text-shadow: 1px 1px 2px grey;
+- 文字描边 text-stroke: red 4px;
 - 文字溢出 text-overflow:ellipsis;
 - 背景效果 background-size: 100px 100px;
 - 边框效果 border-image:url(bt_blue.png) 0 10;
@@ -354,21 +289,15 @@ html[xmlns*=""]:root #trece  { color: red  }
 }
 ```
 
-### 一个满屏品字布局如何设计?
-
-简单的方式：
-
-- 上面的 div 宽 100%，
-- 下面的两个 div 分别宽 50%，
-- 然后用 float 或者 inline 使其不换行即可
+参考文章：[纯CSS实现各类气球泡泡对话框效果](https://www.zhangxinxu.com/wordpress/2010/03/%E7%BA%AFcss%E5%AE%9E%E7%8E%B0%E5%90%84%E7%B1%BB%E6%B0%94%E7%90%83%E6%B3%A1%E6%B3%A1%E5%AF%B9%E8%AF%9D%E6%A1%86%E6%95%88%E6%9E%9C/)
 
 ### 经常遇到的浏览器的兼容性有哪些？原因，解决方法是什么，常用 hack 的技巧 ？
 
-- png24 位的图片在 iE6 浏览器上出现背景，解决方案是做成 PNG8.
+- png24 位的图片在 IE6 浏览器上出现背景，解决方案是做成 PNG8.
 - 浏览器默认的 margin 和 padding 不同。解决方案是加一个全局的\*{margin:0;padding:0;}来统一
 - IE 下,可以使用获取常规属性的方法来获取自定义属性,也可以使用 getAttribute()获取自定义属性;
 - Firefox 下,只能使用 getAttribute()获取自定义属性。解决方法:统一通过 getAttribute()获取自定义属性
-- IE 下,even 对象有 x,y 属性,但是没有 pageX,pageY 属性
+- IE 下,event 对象有 x,y 属性,但是没有 pageX,pageY 属性
 - Firefox 下,event 对象有 pageX,pageY 属性,但是没有 x,y 属性
 
 ### li 与 li 之间有看不见的空白间隔是什么原因引起的？有什么解决办法？(也称幽灵字符)
@@ -392,8 +321,13 @@ html[xmlns*=""]:root #trece  { color: red  }
 实际上应该如下：
 1. 如果一个声明来自style属性而不是选择器，计作1或者a=1（在一个html文档中，元素“style”的值是样式表规则，这个规则中没有选择器，所以a=1, b=0, c=0, and d=0）
 2. 选择器中id属性的个数,计作b
-3. 选择器中其他属性以及伪类的个数，计作c
-4. 选择器中元素及伪元素的个数，计作d
+3. 类选择器、属性选择器或伪类选择器，计作c
+4. 元素和伪元素，计作d
+5. 通配选择器*对特殊性没有贡献,即0,0,0,0
+6. 元素通过父元素继承过来的样式是没有特殊性值的，所以，通配选择器定义的规则优先级高于元素继承过来的规则的优先级。
+
+伪类：active、link、hover、visited、focus、first-child、lang等
+伪元素：first-letter、first-line、before、after
 
 一些例子：
 ``` css
@@ -424,15 +358,14 @@ style=""     /* a=1 b=0 c=0 d=0 -> 优先级 = 1,0,0,0 */
 
 ### CSS 优先级算法如何计算？
 
-- 优先级就近原则，同权重情况下样式定义最近者为准
-- 载入样式以最后载入的为准
 - 优先级为: !important > id > class > tag important 比 内联优先级高
+- 优先级相同，则最后的规则生效
 
 ### 谈谈浮动和清除浮动
 
 浮动的框可以向左或向右移动，直到他的外边缘碰到包含框或另一个浮动框的边框为止。由于浮动框不在文档的普通流中，所以文档的普通流的块框表现得就像浮动框不存在一样。浮动的块框会漂浮在文档普通流的块框上
 
-解决方法
+避免父元素高度塌陷，清除浮动解决方法
 
 1. 父级 div 定义伪类：after 和 zoom (推荐使用，建议定义公共类，以减少 CSS 代码)
 
@@ -577,7 +510,7 @@ Flexbox 用于不同尺寸屏幕中创建可自动扩展和收缩布局
 
 ### 在 CSS 样式中常使用 px、em 在表现上有什么区别？
 
-- px 相对于显示器屏幕分辨率，无法用浏览器字体放大功能
+- px 相对于显示器屏幕分辨率，大小是确定的
 - em 值并不是固定的，会继承父级的字体大小： em = 像素值 / 父级 font-size
 
 ### 为什么要初始化 CSS 样式？
@@ -811,18 +744,6 @@ input[type="search"]::-webkit-search-cancel-button{
 <a href="logo.jpg" download>下载</a> <a href="logo.jpg" download="网站LOGO" >下载</a>
 ```
 
-### iOS safari 如何阻止“橡皮筋效果”？
-
-```js
-  $(document).ready(function(){
-      var stopScrolling = function(event) {
-          event.preventDefault();
-      }
-      document.addEventListener('touchstart', stopScrolling, false);
-      document.addEventListener('touchmove', stopScrolling, false);
-  });
-```
-
 ### 你对 line-height 是如何理解的？
 
 - line-height 指一行字的高度，包含了字间距，实际上是下一行基线到上一行基线距离
@@ -867,7 +788,8 @@ font-style: oblique; 使没有 italic 属性的文字实现倾斜
 
 ### overflow: scroll 时不能平滑滚动的问题怎么处理？
 
-监听滚轮事件，然后滚动到一定距离时用 jquery 的 animate 实现平滑效果。
+1.css样式解决 {-webkit-overflow-scrolling: touch;}
+2.监听滚轮事件，然后滚动到一定距离时用 jquery 的 animate 实现平滑效果。
 
 ### 一个高度自适应的 div，里面有两个 div，一个高度 100px，希望另一个填满剩下的高度
 
@@ -949,3 +871,11 @@ font-style: oblique; 使没有 italic 属性的文字实现倾斜
 ### css与网络性能
 
 参考文章：[css与网络性能](https://juejin.im/post/5bf4bcbee51d4514e0512f72)
+
+### flex文档
+
+参考文章：[A Complete Guide to Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)、[30 分钟学会 Flex 布局](https://zhuanlan.zhihu.com/p/25303493)
+
+### flex 经典应用场景
+
+参考：[solved by flexbox](https://magic-akari.github.io/solved-by-flexbox/)
