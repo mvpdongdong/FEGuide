@@ -98,14 +98,18 @@ vue.js 是采用数据劫持结合发布者-订阅者模式的方式，通过 Ob
 5. 根据目标页面路径匹配出相应的路由组件列表，和当前页面路径路由组件列表作比较，获得updated,deactivated,
 activated路由组件队列
 6. 根据上述队列，按顺序执行导航守卫钩子：
-    1. 在失活的组件里调用离开守卫。
-    2. 调用全局的 beforeEach 守卫。
-    3. 在重用的组件里调用 beforeRouteUpdate 守卫。
-    4. 在激活的路由配置里调用 beforeEnter。
-    5. 解析异步路由组件。
-    6. 在被激活的组件里调用 beforeRouteEnter。
-    7. 调用全局的 beforeResolve 守卫
-    8. 调用全局的 afterEach 钩子。
+    1. 触发进入其他路由。
+    2. 调用要离开路由的组件守卫beforeRouteLeave
+    3. 调用局前置守卫：beforeEach
+    4. 在重用的组件里调用 beforeRouteUpdate
+    5. 在激活的路由配置里调用 beforeEnter。
+    6. 解析异步路由组件。
+    7. 在被激活的组件里调用 beforeRouteEnter(组件实例还没创建，不能直接使用this)。
+    8. 调用全局的 beforeResolve 守卫
+    9. 导航被确认。
+    10. 调用全局后置钩子的 afterEach 钩子。
+    11. 触发DOM更新(mounted)
+    12. 执行beforeRouteEnter 守卫中传给 next 的回调函数
 
 ### active-class 是哪个组件的属性？
 
@@ -283,3 +287,14 @@ Vuex 中修改 state 的唯一渠道就是执行 commit('xx', payload) 方法，
 ### 调试时的"时空穿梭"功能是如何实现的？[美团](https://tech.meituan.com/vuex_code_analysis.html)
 
 devtoolPlugin 中提供了此功能。因为 dev 模式下所有的 state change 都会被记录下来，'时空穿梭' 功能其实就是将当前的 state 替换为记录中某个时刻的 state 状态，利用 store.replaceState(targetState) 方法将执行 this._vm.state = state 实现。
+
+
+## Vue 遇到业务问题总结
+
+### Vue 管理后台权限路由实现方式
+
+- 如果权限角色比较简单，可以前端定好角色和路由的关系，后端接口返回用户角色，前端判断角色对应路由权限，缺点是前端需要清除角色和路由之间的对应关系；菜单信息写死在前端，要改个显示文字或权限信息，需要重新编译；菜单跟路由耦合在一起，定义路由的时候还有添加菜单显示标题，图标之类的信息，而且路由不一定作为菜单显示，还要多加字段进行标识
+
+- 如果权限角色复杂，则需要将用户权限关系数据保存在后端，将后端返回路由通过 addRoutes 动态挂载之前，需要将数据处理一下，将component字段换为真正的路由组件路径，生成真正的路由配置表，再通过 addRoutes 动态挂载。
+
+参考文章：[vue权限路由实现方式总结](https://juejin.im/post/5b5bfd5b6fb9a04fdd7d687a)
