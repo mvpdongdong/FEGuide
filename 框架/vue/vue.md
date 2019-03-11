@@ -57,7 +57,7 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 - 通过```$parent```、```$children```对象来访问组件实例中的方法和数据
 - vuex 官方推荐的，Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。
 
-参考文章：[Vue.js 父子组件通信的十种方式](https://juejin.im/post/5bd18c72e51d455e3f6e4334)、[Vue.js 父子组件通信的十种方式](https://juejin.im/post/5bd97e7c6fb9a022852a71cf)
+参考文章：[Vue.js 父子组件通信的十种方式](https://juejin.im/post/5bd18c72e51d455e3f6e4334)、[vuejs组件通信精髓归纳](https://segmentfault.com/a/1190000018241972)、[Vue.js 父子组件通信的十种方式](https://juejin.im/post/5bd97e7c6fb9a022852a71cf)
 
 ### 自定义指令(v-check, v-focus) 的方法有哪些? 它有哪些钩子函数? 还有哪些钩子函数参数
 
