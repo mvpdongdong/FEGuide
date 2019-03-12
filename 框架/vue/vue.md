@@ -36,6 +36,7 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 1. 在执行```vm.$mount```过程中会创建一个渲染Watcher对象；
 2. 由于对vm数据劫持，在首次渲染get数据的过程中执行```Object.defineProperty```中的属性getter方法，会为对应响应属性dep对象中加入渲染Watcher对象；
 3. 当对响应式数据做set操作(改变值)时，就会执行setter函数，执行```dep.notify()```,触发dep中的Watcher对象执行渲染回调触发更新；
+4. 需要注意的是 vue 是在 nextTick 批量更新，避免每次执行setter就触发更新，Vue 异步执行 DOM 更新。只要观察到数据变化，Vue 将开启一个队列，并缓冲在同一事件循环中发生的所有数据改变。如果同一个 watcher 被多次触发，只会被推入到队列中一次。这种在缓冲时去除重复数据对于避免不必要的计算和 DOM 操作上非常重要。然后，在下一个的事件循环“tick”中，Vue 刷新队列并执行实际 (已去重的) 工作。Vue 在内部尝试对异步队列使用原生的 Promise.then 和 MessageChannel，如果执行环境不支持，会采用 setTimeout(fn, 0) 代替。为了在数据变化之后等待 Vue 完成更新 DOM ，可以在数据变化之后立即使用 Vue.nextTick(callback) 。这样回调函数在 DOM 更新完成后就会调用。
 
 ### 请详细说下你对 vue 生命周期的理解？
 
