@@ -368,3 +368,7 @@ function find(node, value) {
 ### 尾递归调用
 递归本质上是一种循环操作。纯粹的函数式编程语言没有循环操作命令，所有的循环都用递归实现，这就是为什么尾递归对这些语言极其重要。对于其他支持“尾调用优化”的语言（比如 Lua，ES6），只需要知道循环可以用递归代替，而一旦使用递归，就最好使用尾递归
 参考文章：[尾递归优化](http://es6.ruanyifeng.com/#docs/function#尾调用优化)
+
+### npm install过程
+
+参考文章：[介绍下 npm 模块安装机制，为什么输入 npm install 就可以自动安装对应的模块](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/22)
