@@ -370,7 +370,7 @@ const deepFlatten = arr => [].concat(...arr.map(v => Array.isArray(v) ? deepFlat
 
 function deepFlatten (arr) {
   return arr.reduce((prev,item) => {
-    return prev.concat(Array.isArray(item) ? flatten(item) : item);
+    return prev.concat(Array.isArray(item) ? deepFlatten(item) : item);
   },[]);
 }
 
