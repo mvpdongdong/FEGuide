@@ -92,6 +92,30 @@ function throttle (fn, wait, options) {
 
   return throttled;
 }
+
+//节流简易版
+
+function throttle (fn, wait, imediate) {
+  let callNow = imediate;
+  let timer = null;
+
+  return function () {
+    let context = this;
+    let args = arguments;
+
+    if (callNow) {
+      fn.apply(context, args);
+      callNow = false;
+    }
+
+    if (!timer) {
+      timer = setTimeout(function () {
+        fn.apply(context, args);
+        timer = null;
+      })
+    }
+  }
+}
 ```
 ### 函数防抖实现
 
@@ -127,6 +151,28 @@ function debounce (fn, wait, imediate) {
   }
   return debounced;
 }
+
+//防抖简易版
+function debounce (fn, wait, imediate) {
+  let timer = null;
+  let callNow = imediate;
+
+  return function () {
+    let args = arguments;
+    let context = this;
+
+    if (callNow) {
+      fn.apply(context, args);
+      callNow = false;
+    }
+
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(function () {
+      fn.apply(context, args);
+    });
+  }
+}
+
 ```
 
 ### compose函数实现
@@ -607,6 +653,31 @@ function resolvePromise(p2, x, resolve, reject) {
 
 module.exports = Promise;
 ```
+
+### 实现 Promise.finally
+
+finally 方法用于指定不管 Promise 对象最后状态如何，都会执行的操作，使用方法如下：
+
+```js
+Promise
+	.then(result => { ··· })
+	.catch(error => { ··· })
+	.finally(() => { ··· })
+```
+finally 特点：
+- 不接收任何参数。
+- finally 本质上是 then 方法的特例。
+
+```js
+Promise.prototype.finally = function (callback) {
+  const P = this.construtor;
+  return this.then(
+    value => P.resolve(callback()).then(() => value),
+    reason => p.resolve(callback()).then(() => {throw reason})
+  )
+}
+```
+
 ### 最大子数列问题
 
 ```js

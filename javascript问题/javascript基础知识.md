@@ -4,9 +4,29 @@
 - 0.1、0.2转换为二进制都是无限循环小数，JavaScript采用IEEE 754标准，使用64位固定长度来表示，也就是标准的double双精度浮点数（相关的还有float 32位单精度），所以0.1、0.2二进制存在舍入误差
 参考文章：[0.1+0.2 !== 0.3？](https://juejin.im/post/5bd2f10a51882555e072d0c4)
 
+### JavaScript 类型
+
+- 原始类型：number、string、boolean、null、undefined、symbol，原始类型存储值
+- 引用类型：Object、Array、Date、RegExp、Promise等，对象类型变量存储地址（指针）
+
+```js
+//判断数据类型
+let class2type = {};
+'Array Date Object RegExp Object Promise'.split(' ').forEach(type => class2type['[object ' + type + ']'] = type.toLowerCase());
+
+const type = (obj) => {
+  if (obj == null) return String(obj);
+  return typeof obj === 'object' ? class2type[Object.prototype.toString.call(obj)] || 'object' : typeof obj;
+}
+
+```
+
 ### == 隐式转换步骤
 ![隐式转换步骤](../imgs/JavaScript==符号运算过程.jpg)
 
+### instanceof原理
+
+能在实例的 原型对象链 中找到该构造函数的prototype属性所指向的 原型对象，就返回true
 
 ### Javascript深入系列
 参考文章：[JavaScript深入系列15篇正式完结！](https://juejin.im/post/59278e312f301e006c2e1510)
@@ -158,6 +178,8 @@ var bar = foo()
 
 ### Promise
 
+Promise对象用于异步操作，它表示一个尚未完成且预计在未来完成的异步操作。
+
 请参考：[面试精选之Promise](https://juejin.im/post/5b31a4b7f265da595725f322)
 
 ### async\await原理
@@ -286,6 +308,22 @@ post请求过程（3次交互）：
 | 加载方式 | 运行时加载（加载整个模块，即模块中的所有接口）| 编译时加载（只加载需要的接口）|
 | this指向 | 指向当前模块 | 指向undefined |
 | 循环加载 | 只输出已经执行的部分，还未执行的部分不会输出 | 遇到模块加载命令import时不会去执行模块，而是生成一个动态的只读引用，等到真正用到时再去模块中取值。只要引用存在，代码就能执行 |
+
+### webpack 的 loader 和 plugin 区别，举几个常用的 loader 和 plugin 并说出作用
+
+- loader 用于对模块的源代码进行转换。loader 可以使你在 import 或"加载"模块时预处理文件。因此，loader 类似于其他构建工具中“任务(task)”，并提供了处理前端构建步骤的强大方法。loader 可以将文件从不同的语言（如 TypeScript）转换为 JavaScript，或将内联图像转换为 data URL。loader 甚至允许你直接在 JavaScript 模块中 import CSS文件！
+因为 webpack 本身只能处理 JavaScript，如果要处理其他类型的文件，就需要使用 loader 进行转换，loader 本身就是一个函数，接受源文件为参数，返回转换的结果。
+
+- Plugin 是用来扩展 Webpack 功能的，通过在构建流程里注入钩子实现，它给 Webpack 带来了很大的灵活性。
+通过plugin（插件）webpack可以实 loader 所不能完成的复杂功能，使用 plugin 丰富的自定义 API 以及生命周期事件，可以控制 webpack 打包流程的每个环节，实现对 webpack 的自定义功能扩展。
+
+### webpack 打包的过程
+
+- 读取入口文件，分析模块依赖
+- 对模块进行解析执行（深度遍历）
+- 针对不同的模块使用不同的 loader
+- 编译模块，生成抽象语法树（AST）
+- 遍历 AST，输出 JS
 
 ### webpack热更新原理
 
