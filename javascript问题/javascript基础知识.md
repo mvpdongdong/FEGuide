@@ -410,3 +410,37 @@ function find(node, value) {
 ### npm install过程
 
 参考文章：[介绍下 npm 模块安装机制，为什么输入 npm install 就可以自动安装对应的模块](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/22)
+
+### es5 实现 es6 继承
+
+```js
+// ES5 实现ES6 extends的例子
+function Parent(name){
+    this.name = name;
+}
+Parent.sayHello = function(){
+    console.log('hello');
+}
+Parent.prototype.sayName = function(){
+    console.log('my name is ' + this.name);
+    return this.name;
+}
+
+function Child(name, age){
+    // 相当于super
+    Parent.call(this, name);
+    this.age = age;
+}
+
+_inherits(Child, Parent);
+
+function _inherits (Child, Parent) {
+  Child.prototype = Object.create(Parent.prototype);
+  //或 Object.setPrototypeOf(Child.prototype, Parent.prototype)
+  Child.prototype.contructor = Child;
+
+  //继承父构造函数静态方法
+  Object.setPrototypeOf(Child, Parent); //Child.__proto__ = Parent
+}
+```
+参考文章：[面试官问：JS的继承](https://segmentfault.com/a/1190000018221673)
