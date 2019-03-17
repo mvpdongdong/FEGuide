@@ -1,13 +1,12 @@
-# 阅读顺序: [vdom](./vdom.md) -- [parse](./parse.md) -- [patch](./patch.md) -- [html-parse](./html-parse.md)
+# 阅读顺序: [vdom](./vdom.md) -- [html-parse](./html-parse.md) -- [parse](./parse.md) -- [patch](./patch.md)
 
 ### Virtual Dom 是什么
- 是利用js双缓存dom节点经过diff算法比较，只更新需要更新的dom，实现高效的更新页面，Vue和Ember早就开始用虚拟DOM提高页面更新的速度，随后在Vue.js 2.0中也添加了这一技术
-
+ Virtual DOM 就是用一个原生的 JS 对象去描述一个 DOM 节点， VNode 是对真实 DOM 的一种抽象描述，它的核心定义无非就几个关键属性，标签名、数据、子节点、key等，其它属性都是都是用来扩展 VNode 的灵活性以及实现一些特殊 feature 的。由于 VNode 只是用来映射到真实 DOM 的渲染，不需要包含操作 DOM 的方法，因此它是非常轻量和简单的。
 ### 为什么要用Virtual Dom
 
 1. 如果页面有成千上万的dom节点时，每更新一次就去创建这么多的节点,不断的对页面造成重绘、重排...，产生的性能和体验都非常差
 
-2. 2. Virtual Dom不仅仅提高页面更新速度，还可以扩展添加其他技术，比如Vue里的v-for,v-if,v-else,v-model,自定义指令,绑定事件...
+2. Virtual Dom不仅仅提高页面更新速度，还可以扩展添加其他技术，比如Vue里的v-for,v-if,v-else,v-model,自定义指令,绑定事件...
 
 
 3. 改变了我们写html的方法，摆脱了获取dom节点对象，对其赋值，取值，时间绑定等操作，
@@ -25,19 +24,16 @@
 ![](https://cythilya.github.io/assets/2017-04-08-vue-rendering-flow.png)
 
 说明上图过程：
-* template 经由 parser 解析得到 vnode object，对这个object 进行模版语法解析，转为AST node，最后生成一棵完整的AST tree (抽象语法树，abstract syntax tree)。
-* 使用AST tree 生成渲染函数(render function)，执行渲染函数会得到v-node。
-* watcher 搜集依赖、经由observer 对v-node 深度数据绑定和更新。
-* v-node 经由patch 后render 为真正的HTML。
+* template 经由 parser 解析转为AST node，最后生成一棵完整的AST tree (抽象语法树，abstract syntax tree)。
+* 使用AST tree 生成渲染函数(render function)，执行渲染函数会得到vnode。
+* watcher 搜集依赖、经由 observer 对 vnode 深度数据绑定和更新。
+* vnode 经由patch 后 render 为真正的HTML。
 
 
 数据更新时，渲染得到新的virtual dom,与上次的virtual dom进行diff比较,记录所有有差异的dom节点，然后在patch中更新ui
 ![](2017-04-11-vue-rendering-flow.png)
 
 * 若是已经parse 过的template，则会做更新，例如：比对、重新绑定数据、更新必要的DOM element。
-
-### diff
-* 当组件状态发生更新或交互、数据变更等因素导致需要试图更新的时候，然后触发Virtual Dom数据的变化，然后通过对缓存中的Virtual Dom数据和真实DOM进行diff算法比对，再对真实DOM更新。可以简单认为Virtual Dom是真实DOM的缓存。
 
 ![](https://camo.githubusercontent.com/db55af854af44f10b16053687c6c02d3d5ae4b98/68747470733a2f2f692e6c6f6c692e6e65742f323031372f30382f32372f353961323431396133633631372e706e67)
 
