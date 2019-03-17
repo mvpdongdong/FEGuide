@@ -95,24 +95,24 @@ function throttle (fn, wait, options) {
 
 //节流简易版
 
-function throttle (fn, wait, imediate) {
-  let callNow = imediate;
-  let timer = null;
+function throttle (fn, wait) {
+  let previous = 0, result, context, args, timeout;
 
+  const later = function () {
+    previose = Date.now();
+    timeout = null;
+    fn.apply(context, args);
+  }
   return function () {
-    let context = this;
-    let args = arguments;
-
-    if (callNow) {
-      fn.apply(context, args);
-      callNow = false;
-    }
-
-    if (!timer) {
-      timer = setTimeout(function () {
-        fn.apply(context, args);
-        timer = null;
-      })
+    context = this;
+    args = arguments;
+    let now = Date.now();
+    let remaining = wait - (now -previous);
+    let result;
+    if (remaining <=0 || remaining > wait) {
+      result = fn.apply(context, args);
+    } else if (!timeout) {
+      timeout = setTimeout(later, remaining);
     }
   }
 }
@@ -154,7 +154,7 @@ function debounce (fn, wait, imediate) {
 
 //防抖简易版
 function debounce (fn, wait, imediate) {
-  let timer = null;
+  let timeout = null;
   let callNow = imediate;
 
   return function () {
@@ -166,9 +166,11 @@ function debounce (fn, wait, imediate) {
       callNow = false;
     }
 
-    if (timer) clearTimeout(timer);
-    timer = setTimeout(function () {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(function () {
       fn.apply(context, args);
+      timeout = null
+      callNow = imediate;
     });
   }
 }
