@@ -92,6 +92,40 @@ vue.js 是采用数据劫持结合发布者-订阅者模式的方式，通过 Ob
 
 参考文章：[解析vue2.0的diff算法](https://github.com/aooy/blog/issues/2)
 
+
+### vue 的computed计算属性原理
+
+- computed属性会定义一个computed watcher，computed属性对应的函数，就是watcher的getter
+- 同时在vm上通过 Object.defineProperty 定义属性getter
+- 当vm渲染时，调用 computed 属性getter，则会向 computed 属性依赖的属性添加 computed watcher和 渲染watcher
+- 当 computed 属性依赖的属性值发生改变，则触发 computed watcher 重新计算 computed属性值，同时触发渲染watcher，这时渲染 watcher 读取到的computed属性新值，则渲染的模板发生更新。
+- 综上，computed 属性基于它们的依赖进行缓存的，只在相关依赖发生改变时它们才会重新求值，如下代码逻辑：
+
+```js
+function createComputedGetter (key) {
+  return function computedGetter () {
+    const watcher = this._computedWatchers && this._computedWatchers[key]
+    if (watcher) {
+      if (watcher.dirty) {//只有依赖属性发生改变，dirty才是true，这时重新计算
+        watcher.evaluate()
+      }
+      if (Dep.target) {
+        watcher.depend()
+      }
+      return watcher.value
+    }
+  }
+}
+```
+
+### vue 的watch侦听器属性原理
+
+watch属性会对观察的属性添加一个 user watcher，当属性值变化时，就会触发 user watcher 回调函数执行
+
+### vue 的计算属性和侦听器属性用途
+
+计算属性适合用在模板渲染中，某个值是依赖了其它的响应式对象甚至是计算属性计算而来；而侦听属性适用于观测某个值的变化去完成一段复杂的业务逻辑。
+
 ## vue-router 相关
 
 ### vue-router 运行原理
