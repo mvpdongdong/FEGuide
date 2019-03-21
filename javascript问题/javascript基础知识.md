@@ -325,6 +325,19 @@ post请求过程（3次交互）：
 - 编译模块，生成抽象语法树（AST）
 - 遍历 AST，输出 JS
 
+### webpack 性能优化
+
+- babel-loader、eslint-loader加缓存
+- loader定义include、exclude优化路径搜索
+- 设置noparse，不处理第三方类库
+- 以script标签方式引入jquery等库，避免编译或者dllplugin动态链接库
+- UglifyJsPlugin压缩插件开启parallel多进程选项、cache缓存选项
+
+### webpack原理
+
+参考文章：[webpack原理](https://segmentfault.com/a/1190000015088834)
+
+
 ### webpack热更新原理
 
 参考文章: [Webpack & The Hot Module Replacement](https://medium.com/@rajaraodv/webpack-hot-module-replacement-hmr-e756a726a07)

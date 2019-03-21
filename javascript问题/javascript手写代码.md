@@ -462,6 +462,16 @@ const add = (a, b) => {
 }
 ```
 
+### 合并数组中相邻且重复的元素
+
+```js
+const merge = array => Array.isArray(array)
+                        ? array.reduce((a, b) => a[a.length - 1] === b ? a
+                        : [...a, b], []) : [];
+
+console.log(merge([1,1,2,3,2]))//[1, 2, 3, 2]
+```
+
 ### Promise的标准实现
 
 ```js
