@@ -16,12 +16,12 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 
 - 低耦合。视图（View）可以独立于 Model 变化和修改，一个 ViewModel 可以绑定到不同的"View"上，当 View 变化的时候 Model 可以不变，当 Model 变化的时候 View 也可以不变。
 - 可重用性。你可以把一些视图逻辑放在一个 ViewModel 里面，让很多 view 重用这段视图逻辑。
-- 独立开发。开发人员可以专注于业务逻辑和数据的开发（ViewModel），设计人员可以专注于页面设计，使用 Expression Blend 可以很容易设计界面并生成 xml 代码。
+- 独立开发。开发人员可以专注于业务逻辑和数据的开发（ViewModel），设计人员可以专注于页面设计。
 - 可测试。界面素来是比较难于测试的，而现在测试可以针对 ViewModel 来写。
 
 ### vue 响应式原理
 
-当一个Vue实例创建时，vue会遍历data选项的属性，用 Object.defineProperty 将它们转为getter/setter并且在内部追踪相关依赖，在属性被访问和修改时通知变化。每个组件实例都有相应的渲染watcher程序实例，它会在组件渲染的过程中把属性记录为依赖，之后当依赖项的setter被调用时，会通知watcher重新计算，从而致使它关联的组件得以更新
+当一个Vue实例创建时，vue会遍历data选项的属性，用 Object.defineProperty 将它们转为 getter/setter 并且在内部追踪相关依赖，在属性被访问和修改时通知变化。每个组件实例都有相应的渲染 watcher 程序实例，它会在组件渲染的过程中触发响应式属性 getter ，并把属性记录为依赖，之后当依赖项的setter被调用时，会通知watcher重新计算，从而致使它关联的组件得以更新
 
 ![vue响应式原理示意图.jpg](./imgs/vue响应式原理示意图.jpg)
 
@@ -34,8 +34,8 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 ### vue 更新渲染流程
 
 1. 在执行```vm.$mount```过程中会创建一个渲染Watcher对象；
-2. 由于对vm数据劫持，在首次渲染get数据的过程中执行```Object.defineProperty```中的属性getter方法，会为对应响应属性dep对象中加入渲染Watcher对象；
-3. 当对响应式数据做set操作(改变值)时，就会执行setter函数，执行```dep.notify()```,触发dep中的Watcher对象执行渲染回调触发更新；
+2. 由于对vm数据劫持，在首次渲染时会为响应式属性的dep对象中加入渲染 Watcher 对象；
+3. 当对响应式数据做set操作(改变值)时，就会执行属性setter函数，执行```dep.notify()```,触发dep中的Watcher对象执行渲染回调触发更新；
 4. 需要注意的是 vue 是在 nextTick 批量更新，避免每次执行setter就触发更新，Vue 异步执行 DOM 更新。只要观察到数据变化，Vue 将开启一个队列，并缓冲在同一事件循环中发生的所有数据改变。如果同一个 watcher 被多次触发，只会被推入到队列中一次。这种在缓冲时去除重复数据对于避免不必要的计算和 DOM 操作上非常重要。然后，在下一个的事件循环“tick”中，Vue 刷新队列并执行实际 (已去重的) 工作。Vue 在内部尝试对异步队列使用原生的 Promise.then 和 MessageChannel，如果执行环境不支持，会采用 setTimeout(fn, 0) 代替。为了在数据变化之后等待 Vue 完成更新 DOM ，可以在数据变化之后立即使用 Vue.nextTick(callback) 。这样回调函数在 DOM 更新完成后就会调用。
 
 ### 请详细说下你对 vue 生命周期的理解？
@@ -54,7 +54,7 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 - .sync修饰符，在有些情况下，我们可能需要对一个 prop 进行“双向绑定”。不幸的是，真正的双向绑定会带来维护上的问题，因为子组件可以修改父组件，且在父组件和子组件都没有明显的改动来源。通过.sync属性修饰符，子组件通过调用```this.$emit('update:propertyName', val)```来可以修改 prop ；
 - ```$attrs``` 和 ```$listeners```
 - ```provide``` / ```inject```
-- EventBus中央事件总线
+- EventBus中央事件总线，解决非父子组件通信
 - 通过```$parent```、```$children```对象来访问组件实例中的方法和数据
 - vuex 官方推荐的，Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。
 
@@ -84,13 +84,13 @@ vue.js 是采用数据劫持结合发布者-订阅者模式的方式，通过 Ob
 
 - 在自身实例化时往属性订阅器(dep)里面添加自己
 - 自身必须有一个 update()方法
-- 待属性变动 dep.notice()通知时，能调用自身的 update() 方法，并触发 Compile 中绑定的回调，则功成身退。
+- 待属性变动 dep.notify()通知时，能调用自身的 update() 方法，并触发 Compile 中绑定的回调，则功成身退。
 
 第四步：MVVM 作为数据绑定的入口，整合 Observer、Compile 和 Watcher 三者，通过 Observer 来监听自己的 model 数据变化，通过 Compile 来解析编译模板指令，最终利用 Watcher 搭起 Observer 和 Compile 之间的通信桥梁，达到数据变化 -> 视图更新；视图交互变化(input) -> 数据 model 变更的双向绑定效果。
 
 ### vue 虚拟dom diff算法
 
-参考文章：[解析vue2.0的diff算法](https://github.com/aooy/blog/issues/2)
+参考文章：[解析vue2.0的diff算法](https://github.com/aooy/blog/issues/2)、[详解vue的diff算法](https://juejin.im/post/5affd01551882542c83301da)
 
 
 ### vue 的computed计算属性原理
@@ -109,8 +109,8 @@ function createComputedGetter (key) {
       if (watcher.dirty) {//只有依赖属性发生改变，dirty才是true，这时重新计算
         watcher.evaluate()
       }
-      if (Dep.target) {
-        watcher.depend()
+      if (Dep.target) {//渲染watcher
+        watcher.depend() //computed依赖属性dep添加渲染watcher
       }
       return watcher.value
     }
