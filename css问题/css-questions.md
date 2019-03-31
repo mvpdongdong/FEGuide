@@ -125,6 +125,10 @@ CSS 中的`z-index`属性控制重叠元素的垂直叠加顺序。`z-index`只�
 * `overflow`的值不是`visible`。
 
 在 BFC 中，每个盒的左外边缘都与其包含的块的左边缘相接。
+- BFC 内部的子元素，在垂直方向，边距会发生重叠。
+- BFC在页面中是独立的容器，外面的元素不会影响里面的元素，反之亦然。
+- BFC区域不与旁边的float box区域重叠。（可以用来清除浮动带来的影响）。
+- 计算BFC的高度时，浮动的子元素也参与计算。
 
 两个相邻的块级盒在垂直方向上的边距会发生合并（collapse）。更多内容请参考[边距合并（margin collapsing）](https://www.sitepoint.com/web-foundations/collapsing-margins/)。
 
@@ -223,7 +227,7 @@ CSS 中的`z-index`属性控制重叠元素的垂直叠加顺序。`z-index`只�
 通过设置`fill`和`stroke`属性，可以完成基本着色操作。`fill`可以设置内部的颜色，`stroke`可以设置周围绘制的线条的颜色。你可以使用与`HTML`中使用的CSS颜色命名方案相同的CSS颜色命名方案：颜色名称（即`red`）、RGB值（即`rgb(255,0,0)`）、十六进制值、RGBA值等等。
 
 ```html
-<rect x="10" y="10" width="100" height="100" stroke="blue" 
+<rect x="10" y="10" width="100" height="100" stroke="blue"
   fill="purple" fill-opacity="0.5" stroke-opacity="0.8"/>
 ```
 

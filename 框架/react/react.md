@@ -342,3 +342,7 @@ creat-react-app Yeoman 等
 ### react 15.x版本stack reconciler解析
 
 参考文章：[stack reconciler](https://react.css88.com/docs/implementation-notes.html)
+
+### react 面试题总结
+
+参考：[React 面试题 & 回答](https://github.com/semlinker/reactjs-interview-questions)

@@ -52,6 +52,22 @@ function objectFactory (fun) {
 }
 ```
 
+### instanceof 模拟实现
+
+```js
+function instanceOf(obj, func) {
+  var proto = obj.__proto__;
+  var prototype = func.prototype;
+
+  while(true) {
+    if (proto === prototype) return true;
+    if (proto === null) return false;
+    proto = proto.__proto__;
+  }
+}
+
+```
+
 ### 函数节流实现
 
 ```js
@@ -367,6 +383,63 @@ const clone = parent => {
 当然,我们这个深克隆还不算完美,例如Buffer对象、Promise、Set、Map可能都需要我们做特殊处理，另外对于确保没有循环引用的对象，我们可以省去对循环引用的特殊处理，因为这很消耗时间，不过一个基本的深克隆函数我们已经实现了.
 
 深克隆完整实现: [面试官:请你实现一个深克隆](https://juejin.im/post/5abb55ee6fb9a028e33b7e0a)
+
+### 数组去重有哪些方法
+
+```js
+const arr = [1,2,3,4,4,3,2,1];
+// 方法一：new Set ES6
+return [...new Set(arr)]; // 这里又问到我...的用法
+
+// 方法二：双层for循环 (然后说这样性能不好，让我只用一层for循环的方法)
+function unique(arr){
+  var res=[];
+  for (var i = 0; i < arr.length; i++) {
+    for (var j = i+1; j < arr.length; j++) {
+      if (arr[i] === arr[j]) {
+        ++ i;
+        j = i;
+      }
+    }
+    res.push(arr[i]);
+  }
+  return res;
+}
+
+// 方法三：单层for循环 + indexOf
+function unique(array){
+    var res = [];
+    for(var i = 0; i < array.length; i++) {
+        //如果当前数组的第i项在当前数组中第一次出现的位置是i，才存入数组；否则代表是重复的
+        if (array.indexOf(array[i]) === i) {
+            res.push(array[i])
+        }
+    }
+    return res;
+}
+// 方法三点三：或者这样
+function unique(array){
+    let res = [];
+    for(var i = 0; i < array.length; i++) {
+        if (res.indexOf(array[i]) === -1) {
+            res.push(array[i]);
+        }
+    }
+    return res;
+}
+
+// 方法四：面试官说如果可以容忍改变原有数组的情况下，怎么改进性能更好
+function unique(array){
+    // 注意这里一定要倒叙for循环，否则会出现问题
+    for(var i = array.length - 1; i > 0; i--) {
+        if (array.indexOf(array[i]) !== i) {
+            array.splice(i, 1);
+        }
+    }
+    // 因为少声明一个变量，节省了内存空间（虽然可以忽略不计，但是面试嘛～）
+    return array;
+}
+```
 
 ### 实现destructuringArray方法，达到如下效果
 ```js
@@ -802,4 +875,17 @@ function lis(n) {
 
 console.log(lis([0, 3, 4, 17, 2, 8, 6, 10])) // 5
 
+```
+
+### 数字千位分隔符
+
+```js
+function commafy(num) {
+  return num && num
+    .toString()
+    .replace(/(\d)(?=(\d{3})+\.)/g, function($0, $1) {
+        return $1 + ",";
+    });
+}
+ console.log(commafy(1312567.903000)) //1,312,567.903
 ```
