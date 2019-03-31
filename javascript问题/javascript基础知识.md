@@ -125,6 +125,37 @@ var bar = foo()
 
 请参考： [浅谈程序语言的垃圾回收机制](https://mp.weixin.qq.com/s?__biz=MzU5NzEwMDQyNA==&mid=2247483808&idx=1&sn=06dcf160978dd022a4e5c5c99ad1b073&chksm=fe59d347c92e5a513f42bb071d97247e384d6a3d94cbcb8f03fb200171aa5aa0af1235e910ca&mpshare=1&scene=22&srcid=0824EHt1if6Nq61TpEDriDvj%23rd)
 
+### 浏览器包含哪些进程
+
+- browser进程浏览器的主进程，只有一个。负责用户交互（前进、后退）;负责各个页面的管理，创建和销毁其他进程;网络资源的管理，下载等;
+- 第三方插件进程：每种类型的插件对应一个进程，仅当使用该插件时才创建
+- GPU进程：最多一个，用于3D绘制等
+- 浏览器渲染进程（浏览器内核）（Renderer进程，内部是多线程的）：默认每个Tab页面一个进程，互不影响。主要作用为:页面渲染，脚本执行，事件处理等
+
+### 浏览器多进程优势
+
+- 避免单个页面进程crash，导致整个浏览器受到影响
+- 避免单个插件进程crash，导致整个浏览器受到影响
+- 多进程充分利用多核优势
+- 方便使用沙盒模型隔离插件等进程，提高浏览器稳定性
+
+如果浏览器是单进程，那么某个Tab页崩溃了，就影响了整个浏览器，体验有多差；同理如果是单进程，插件崩溃了也会影响整个浏览器；而且多进程还有其它的诸多优势。
+
+### 浏览器内核（渲染进程）是多线程的，包含哪些线程
+
+- GUI渲染线程，GUI渲染线程与JS引擎线程是互斥的，当JS引擎执行时GUI线程会被挂起（相当于被冻结了），GUI更新会被保存在一个队列中等到JS引擎空闲时立即被执行；
+- js引擎线程，也称为JS内核，负责处理Javascript脚本程序（例如V8引擎）。一个Tab页（renderer进程）中无论什么时候都只有一个JS线程在运行JS程序；
+- 事件触发线程，归属于浏览器而不是JS引擎，用来控制事件循环（可以理解，JS引擎自己都忙不过来，需要浏览器另开线程协助），事件触发线程管理着一个任务队列，当对应的事件符合触发条件被触发时，该线程会把事件添加到待处理队列的队尾，等待JS引擎的处理；
+- 定时触发器线程，setInterval与setTimeout所在线程，浏览器定时计数器并不是由JavaScript引擎计数的,（因为JavaScript引擎是单线程的, 如果处于阻塞线程状态就会影响记计时的准确）；
+- 异步http请求线程，在XMLHttpRequest在连接后是通过浏览器新开一个线程请求，将检测到状态变更时，如果设置有回调函数，异步线程就产生状态变更事件，将这个回调再放入事件队列中。再由JavaScript引擎执行。
+
+### 浏览器GUI渲染线程渲染页面步骤
+  1. 解析html建立dom树
+  2. 解析css构建render树（将CSS代码解析成树形的数据结构，然后结合DOM合并成render树）
+  3. 布局render树（layout、reflow）生成layout tree，负责元素尺寸、位置的计算
+  4. 绘制（paint）render树，遍历布局树来创建层树（layer tree），添加了 `will-change` CSS 属性的元素，会被看做单独的一层
+  5. 浏览器将各层信息发送给GPU，GPU将各层合成（composite），显示在屏幕上。
+
 ### 浏览器中的javascript运行机制(event loop)
 
 ![浏览器中的Eventloop](../imgs/event_loop.png)
@@ -144,8 +175,7 @@ var bar = foo()
   - 也就是说，在当前task任务后，下一个task之前，在渲染之前
   - 所以它的响应速度相比setTimeout（setTimeout是task）会更快，因为无需等渲染
   - 也就是说，在某一个macrotask执行完后，就会将在它执行期间产生的所有microtask都执行完毕（在渲染前）
-
-分别很么样的场景会形成macrotask和microtask呢？
+什么样的场景会形成macrotask和microtask呢？
   - macrotask：主代码块，setTimeout，setInterval等（可以看到，事件队列中的每一个事件都是一个macrotask）
   - microtask：Promise，process.nextTick等
 
@@ -167,6 +197,10 @@ var bar = foo()
 
 ### 浏览器工作原理
 参考文章：[图解浏览器的基本工作原理](https://zhuanlan.zhihu.com/p/47407398)、[从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理](https://juejin.im/post/5a6547d0f265da3e283a1df7)、[现代浏览器探秘（part3）：渲染](https://juejin.im/post/5c3d870d6fb9a049e12a764c)
+
+### 全新Chrome Devtools Performance使用指南
+
+参考文章：[全新Chrome Devtools Performance使用指南](https://segmentfault.com/a/1190000011516068)
 
 ### 前端跨域方法总结
 
