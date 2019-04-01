@@ -21,13 +21,13 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 
 ### vue 响应式原理
 
-当一个Vue实例创建时，vue会遍历data选项的属性，用 Object.defineProperty 将它们转为 getter/setter 并且在内部追踪相关依赖，在属性被访问和修改时通知变化。每个组件实例都有相应的渲染 watcher 程序实例，它会在组件渲染的过程中触发响应式属性 getter ，并把属性记录为依赖，之后当依赖项的setter被调用时，会通知watcher重新计算，从而致使它关联的组件得以更新
+当一个Vue实例创建时，vue会遍历data选项的属性，用 Object.defineProperty 将它们转为 getter/setter 并且在内部追踪相关依赖，在属性被访问和修改时通知变化。每个组件实例都有相应的渲染 watcher 程序实例，它会在组件渲染的过程中触发响应式属性 getter ，并把属性记录为依赖，之后当依赖项的setter被调用时，会通知watcher重新计算，从而致使它关联的组件得以更新。
 
 ![vue响应式原理示意图.jpg](./imgs/vue响应式原理示意图.jpg)
 
 ### vue 的渲染流程
 
-  1. ```new Vue()``` 初始化vue实例vm，在构造函数内部调用_init方法，在_init方法中会初始化实例属性和方法并触发```beforeCreate``` 钩子函数，随后最关键的是利用```Object.defineProperty```方法劫持数据建立响应式系统并触发```created```钩子函数；
+  1. ```new Vue()``` 初始化vue实例vm，在构造函数内部调用_init方法，在_init方法中会初始化实例属性并触发```beforeCreate``` 钩子函数，随后最关键的是利用```Object.defineProperty```方法劫持数据建立响应式系统并触发```created```钩子函数；
   2. 接着，执行```vm.$mount```方法，将vm挂载到dom节点上，在这个过程中将模板编译成可用的```render```函数，之后就触发```beforeMount```钩子函数；
   3. 执行```render```函数返回虚拟Dom树，然后利用```__patch__```方法将虚拟Dom节点转换为真实的Dom对象，并挂载到页面中显示完成渲染，随之执行```mounted```钩子函数;
 
@@ -37,39 +37,6 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 2. 由于对vm数据劫持，在首次渲染时会为响应式属性的dep对象中加入渲染 Watcher 对象；
 3. 当对响应式数据做set操作(改变值)时，就会执行属性setter函数，执行```dep.notify()```,触发dep中的Watcher对象执行渲染回调触发更新；
 4. 需要注意的是 vue 是在 nextTick 批量更新，避免每次执行setter就触发更新，Vue 异步执行 DOM 更新。只要观察到数据变化，Vue 将开启一个队列，并缓冲在同一事件循环中发生的所有数据改变。如果同一个 watcher 被多次触发，只会被推入到队列中一次。这种在缓冲时去除重复数据对于避免不必要的计算和 DOM 操作上非常重要。然后，在下一个的事件循环“tick”中，Vue 刷新队列并执行实际 (已去重的) 工作。Vue 在内部尝试对异步队列使用原生的 Promise.then 和 MessageChannel，如果执行环境不支持，会采用 setTimeout(fn, 0) 代替。为了在数据变化之后等待 Vue 完成更新 DOM ，可以在数据变化之后立即使用 Vue.nextTick(callback) 。这样回调函数在 DOM 更新完成后就会调用。
-
-### 请详细说下你对 vue 生命周期的理解？
-
-答：总共分为 8 个阶段创建前/后，载入前/后，更新前/后，销毁前/后。
-
-- 创建前/后： 在 beforeCreate 阶段，在钩子函数中无法访问state、props，在created中能够访问state、props。
-- 载入前/后：在 beforeMount 阶段，vue实例的render函数已经可用。在 mounted 阶段，vue 实例调用_render方法去生成虚拟DOM树，然后调用_update方法将虚拟DOM映射为真实DOM。
-- 更新前/后：当 data 变化时，会触发 beforeUpdate 和 updated 方法。
-- 销毁前/后：在执行 destroy 方法后，会执行beforeDestroy钩子函数，然后会对vue实例的事件监听、vdom等进行删除解绑，然后执行destroyed钩子函数，但是页面 dom 结构依然存在，需要手动调用原生dom api进行删除
-
-### 组件之间的通信？
-
-- prop，父组件通过prop向子组件传递参数；
-- ```$emit```，子组件通过在内部```$emit```事件,将数据传递给父组件绑定的事件回调函数；
-- .sync修饰符，在有些情况下，我们可能需要对一个 prop 进行“双向绑定”。不幸的是，真正的双向绑定会带来维护上的问题，因为子组件可以修改父组件，且在父组件和子组件都没有明显的改动来源。通过.sync属性修饰符，子组件通过调用```this.$emit('update:propertyName', val)```来可以修改 prop ；
-- ```$attrs``` 和 ```$listeners```
-- ```provide``` / ```inject```
-- EventBus中央事件总线，解决非父子组件通信
-- 通过```$parent```、```$children```对象来访问组件实例中的方法和数据
-- vuex 官方推荐的，Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。
-
-参考文章：[Vue.js 父子组件通信的十种方式](https://juejin.im/post/5bd18c72e51d455e3f6e4334)、[vuejs组件通信精髓归纳](https://segmentfault.com/a/1190000018241972)、[Vue.js 父子组件通信的十种方式](https://juejin.im/post/5bd97e7c6fb9a022852a71cf)
-
-### 自定义指令(v-check, v-focus) 的方法有哪些? 它有哪些钩子函数? 还有哪些钩子函数参数
-
-- 全局定义指令：在 vue 对象的 directive 方法里面有两个参数, 一个是指令名称, 另一个是函数。
-- 组件内定义指令：directives
-- 钩子函数: bind(绑定事件出发)、inserted(节点插入时候触发)、update(组件内相关更新)
-- 钩子函数参数： el、binding
-
-### 说出至少 4 种 vue 当中的指令和它的用法
-
-v-if(判断是否隐藏)、v-for(把数据遍历出来)、v-bind(绑定属性)、v-model(实现双向绑定)
 
 ### vue 的双向绑定的原理是什么(常考)
 
@@ -88,10 +55,33 @@ vue.js 是采用数据劫持结合发布者-订阅者模式的方式，通过 Ob
 
 第四步：MVVM 作为数据绑定的入口，整合 Observer、Compile 和 Watcher 三者，通过 Observer 来监听自己的 model 数据变化，通过 Compile 来解析编译模板指令，最终利用 Watcher 搭起 Observer 和 Compile 之间的通信桥梁，达到数据变化 -> 视图更新；视图交互变化(input) -> 数据 model 变更的双向绑定效果。
 
+### 请详细说下你对 vue 生命周期的理解？
+
+答：总共分为 8 个阶段创建前/后，载入前/后，更新前/后，销毁前/后。
+
+- 创建前/后： 在 beforeCreate 阶段，在钩子函数中无法访问state、props，在created中能够访问state、props。
+- 载入前/后：在 beforeMount 阶段，vue实例的render函数已经可用。在 mounted 阶段，vue 实例调用_render方法去生成虚拟DOM树，然后调用_update方法将虚拟DOM映射为真实DOM。
+- 更新前/后：当 data 变化时，会触发 beforeUpdate 和 updated 方法。
+- 销毁前/后：在执行 destroy 方法后，会执行beforeDestroy钩子函数，然后会对vue实例的事件监听、vdom等进行删除解绑，然后执行destroyed钩子函数，但是页面 dom 结构依然存在，需要手动调用原生dom api进行删除
+
+### 组件之间的通信？
+
+- prop，父组件通过prop向子组件传递参数；
+- ```$emit```，子组件通过在内部```$emit```事件,将数据传递给父组件绑定的事件回调函数；
+- .sync修饰符，在有些情况下，我们可能需要对一个 prop 进行“双向绑定”。不幸的是，真正的双向绑定会带来维护上的问题，因为子组件可以修改父组件，且在父组件和子组件都没有明显的改动来源。通过.sync属性修饰符，子组件通过调用```this.$emit('update:propertyName', val)```来可以修改 prop ；
+- 通过```$parent```、```$children```对象来访问组件实例中的方法和数据；
+- ```$attrs``` 和 ```$listeners```；
+- ```provide``` / ```inject```；
+- EventBus中央事件总线，解决非父子组件通信；
+- vuex 官方推荐的，Vuex 是一个专为 Vue.js 应用程序开发的状态管理模式。
+
+参考文章：[Vue.js 父子组件通信的十种方式](https://juejin.im/post/5bd18c72e51d455e3f6e4334)、[vuejs组件通信精髓归纳](https://segmentfault.com/a/1190000018241972)、[Vue.js 父子组件通信的十种方式](https://juejin.im/post/5bd97e7c6fb9a022852a71cf)
+
 ### vue 虚拟dom diff算法
 
-参考文章：[解析vue2.0的diff算法](https://github.com/aooy/blog/issues/2)、[详解vue的diff算法](https://juejin.im/post/5affd01551882542c83301da)
+很多时候手工优化dom确实会比virtual dom效率高，对于比较简单的dom结构用手工优化没有问题，但当页面结构很庞大，结构很复杂时，手工优化会花去大量时间，而且可维护性也不高，不能保证每个人都有手工优化的能力。至此，virtual dom的解决方案应运而生，virtual dom很多时候都不是最优的操作，但它具有普适性，在效率、可维护性之间达平衡。
 
+参考文章：[解析vue2.0的diff算法](https://github.com/aooy/blog/issues/2)、[详解vue的diff算法](https://juejin.im/post/5affd01551882542c83301da)
 
 ### vue 的computed计算属性原理
 
@@ -106,10 +96,10 @@ function createComputedGetter (key) {
   return function computedGetter () {
     const watcher = this._computedWatchers && this._computedWatchers[key]
     if (watcher) {
-      if (watcher.dirty) {//只有依赖属性发生改变，dirty才是true，这时重新计算
+      if (watcher.dirty) { //只有依赖属性发生改变，dirty才是true，这时重新计算
         watcher.evaluate()
       }
-      if (Dep.target) {//渲染watcher
+      if (Dep.target) {   //渲染watcher
         watcher.depend() //computed依赖属性dep添加渲染watcher
       }
       return watcher.value
@@ -125,6 +115,50 @@ watch属性会对观察的属性添加一个 user watcher，当属性值变化�
 ### vue 的计算属性和侦听器属性用途
 
 计算属性适合用在模板渲染中，某个值是依赖了其它的响应式对象甚至是计算属性计算而来；而侦听属性适用于观测某个值的变化去完成一段复杂的业务逻辑。
+另外 computed 和 watch 还都支持对象的写法，这种方式知道的人并不多。
+
+```js
+vm.$watch('obj', {
+    // 深度遍历
+    deep: true,
+    // 立即触发
+    immediate: true,
+    // 执行的函数
+    handler: function(val, oldVal) {}
+})
+var vm = new Vue({
+  data: { a: 1 },
+  computed: {
+    aPlus: {
+      // this.aPlus 时触发
+      get: function () {
+        return this.a + 1
+      },
+      // this.aPlus = 1 时触发
+      set: function (v) {
+        this.a = v - 1
+      }
+    }
+  }
+})
+```
+
+### keep-alive组件
+
+如果你需要在组件切换的时候，保存一些组件的状态防止多次渲染，就可以使用 keep-alive 组件包裹需要保存的组件。
+
+对于 keep-alive 组件来说，它拥有两个独有的生命周期钩子函数，分别为 activated 和 deactivated 。用 keep-alive 包裹的组件在切换时不会进行销毁，而是缓存到内存中并执行 deactivated 钩子函数，命中缓存渲染后会执行 actived 钩子函数。
+
+### 自定义指令(v-check, v-focus) 的方法有哪些? 它有哪些钩子函数? 还有哪些钩子函数参数
+
+- 全局定义指令：在 vue 对象的 directive 方法里面有两个参数, 一个是指令名称, 另一个是函数。
+- 组件内定义指令：directives
+- 钩子函数: bind(绑定事件出发)、inserted(节点插入时候触发)、update(组件内相关更新)
+- 钩子函数参数： el、binding
+
+### 说出至少 4 种 vue 当中的指令和它的用法
+
+v-if(判断是否隐藏)、v-for(把数据遍历出来)、v-bind(绑定属性)、v-on(绑定事件)、v-model(实现双向绑定)、v-html(插入html)
 
 ## vue-router 相关
 
@@ -134,7 +168,7 @@ watch属性会对观察的属性添加一个 user watcher，当属性值变化�
 2. 在安装VueRouter过程中，为组件实例添加```$route```、```$router```属性，全局注册```router-view```和```router-link```组件，并全局mixin，为根vue实例配置beforeCreate钩子，钩子中执行```this._router.init```方法
 3. ```this._router```就是```new VueRouter(config)```生成的实例，构造函数会根据路由配置确定hash模式还是history模式，从而初始化相应的history实例
 4. 根vue实例运行beforeCreate钩子执行```this._router.init```方法，这个方法执行```this.history.transitionTo```方法用于路由切换
-5. 根据目标页面路径匹配出相应的路由组件列表，和当前页面路径路由组件列表作比较，获得updated,deactivated,
+5. 根据目标页面路径匹配出相应的路由组件列表，和当前页面路径路由组件列表作比较，获得updated、deactivated、
 activated路由组件队列
 6. 根据上述队列，按顺序执行导航守卫钩子：
     1. 触发进入其他路由。
@@ -266,7 +300,6 @@ import store from './store'
 
 - vuex 就是一个仓库，仓库里放了很多对象。其中 state 就是数据源存放地，对应于一般 vue 对象里面的 data
 - state 里面存放的数据是响应式的，vue 组件从 store 读取数据，若是 store 中的数据发生改变，依赖store中的数据的组件也会发生更新
-- 它通过 mapState 把全局的 state 和 getters 映射到当前组件的 computed 计算属性
 
 ### vuex 的 getter 特性是什么
 
@@ -276,6 +309,7 @@ import store from './store'
 
 ### vuex 的 mutation 特性是什么
 
+- mutation中只能进行同步操作
 - action 类似于 muation, 不同在于：action 提交的是 mutation,而不是直接变更状态
 - action 可以包含任意异步操作
 
@@ -295,7 +329,7 @@ import store from './store'
 
 vuex 仅仅是作为 vue 的一个插件而存在，不像 Redux,MobX 等库可以应用于所有框架，vuex 只能使用在 vue 上，很大的程度是因为其高度依赖于 vue 的 computed 依赖检测系统以及其插件系统，
 
-vuex 整体思想诞生于 flux,可其的实现方式完完全全的使用了 vue 自身的响应式设计，依赖监听、依赖收集都属于 vue 对象 Property set get 方法的代理劫持。vuex 中的 store 本质就是没有 template 的隐藏着的 vue 组件；
+vuex 整体思想诞生于 flux,可其实现方式完完全全的使用了 vue 自身的响应式设计，依赖监听、依赖收集都属于 vue 对象 Property set get 方法的代理劫持。vuex 中的 store 本质就是没有 template 的隐藏着的 vue 组件；
 
 ### 使用 Vuex 只需执行 Vue.use(Vuex)，并在 Vue 的配置中传入一个 store 对象的示例，store 是如何实现注入的？[美团](https://tech.meituan.com/vuex_code_analysis.html)
 

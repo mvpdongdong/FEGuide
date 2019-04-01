@@ -117,7 +117,7 @@ function throttle (fn, wait) {
   const later = function () {
     previose = Date.now();
     timeout = null;
-    fn.apply(context, args);
+    result = fn.apply(context, args);
   }
   return function () {
     context = this;
@@ -126,10 +126,16 @@ function throttle (fn, wait) {
     let remaining = wait - (now -previous);
     let result;
     if (remaining <=0 || remaining > wait) {
+      if (timeout) {
+        clearTimeout(timeout);
+        timeout = null
+      }
       result = fn.apply(context, args);
+      previous = now
     } else if (!timeout) {
       timeout = setTimeout(later, remaining);
     }
+    return result;
   }
 }
 ```
@@ -389,7 +395,9 @@ const clone = parent => {
 ```js
 const arr = [1,2,3,4,4,3,2,1];
 // 方法一：new Set ES6
-return [...new Set(arr)]; // 这里又问到我...的用法
+function unique(arr) {
+  return [...new Set(arr)]; // 这里又问到我...的用法
+}
 
 // 方法二：双层for循环 (然后说这样性能不好，让我只用一层for循环的方法)
 function unique(arr){
@@ -408,36 +416,36 @@ function unique(arr){
 
 // 方法三：单层for循环 + indexOf
 function unique(array){
-    var res = [];
-    for(var i = 0; i < array.length; i++) {
-        //如果当前数组的第i项在当前数组中第一次出现的位置是i，才存入数组；否则代表是重复的
-        if (array.indexOf(array[i]) === i) {
-            res.push(array[i])
-        }
+  var res = [];
+  for(var i = 0; i < array.length; i++) {
+    //如果当前数组的第i项在当前数组中第一次出现的位置是i，才存入数组；否则代表是重复的
+    if (array.indexOf(array[i]) === i) {
+        res.push(array[i])
     }
-    return res;
+  }
+  return res;
 }
 // 方法三点三：或者这样
 function unique(array){
-    let res = [];
-    for(var i = 0; i < array.length; i++) {
-        if (res.indexOf(array[i]) === -1) {
-            res.push(array[i]);
-        }
+  let res = [];
+  for(var i = 0; i < array.length; i++) {
+    if (res.indexOf(array[i]) === -1) {
+        res.push(array[i]);
     }
-    return res;
+  }
+  return res;
 }
 
 // 方法四：面试官说如果可以容忍改变原有数组的情况下，怎么改进性能更好
 function unique(array){
-    // 注意这里一定要倒叙for循环，否则会出现问题
-    for(var i = array.length - 1; i > 0; i--) {
-        if (array.indexOf(array[i]) !== i) {
-            array.splice(i, 1);
-        }
+  // 注意这里一定要倒叙for循环，否则会出现问题
+  for(var i = array.length - 1; i > 0; i--) {
+    if (array.indexOf(array[i]) !== i) {
+        array.splice(i, 1);
     }
-    // 因为少声明一个变量，节省了内存空间（虽然可以忽略不计，但是面试嘛～）
-    return array;
+  }
+  // 因为少声明一个变量，节省了内存空间（虽然可以忽略不计，但是面试嘛～）
+  return array;
 }
 ```
 
