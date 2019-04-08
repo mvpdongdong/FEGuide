@@ -26,7 +26,7 @@ const type = (obj) => {
 
 ### instanceof原理
 
-能在实例的 原型对象链 中找到该构造函数的prototype属性所指向的 原型对象，就返回true
+能在实例的 原型对象链 中找到该构造函数的 prototype 属性所指向的 原型对象，就返回true
 
 ### Javascript深入系列
 参考文章：[JavaScript深入系列15篇正式完结！](https://juejin.im/post/59278e312f301e006c2e1510)
