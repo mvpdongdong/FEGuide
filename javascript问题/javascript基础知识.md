@@ -498,3 +498,100 @@ function _inherits (Child, Parent) {
 }
 ```
 参考文章：[面试官问：JS的继承](https://segmentfault.com/a/1190000018221673)
+
+### es6
+
+数组扩展
+
+- Array.from()，Array.from方法用于将两类对象转为真正的数组：类似数组的对象（array-like object）和可遍历（iterable）的对象（包括 ES6 新增的数据结构 Set 和 Map）
+  ```js
+  let arrayLike = {
+    '0': 'a',
+    '1': 'b',
+    '2': 'c',
+    length: 3
+  };
+
+  // ES5的写法
+  var arr1 = [].slice.call(arrayLike); // ['a', 'b', 'c']
+
+  // ES6的写法
+  let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
+  ```
+- Array.of() 方法用于将一组值，转换为数组。
+  ```js
+    Array.of(3, 11, 8) // [3,11,8]
+    Array.of(3) // [3]
+    Array.of(3).length // 1
+  ```
+- 数组实例的 copyWithin()
+  ```js
+    // 将3号位复制到0号位
+    [1, 2, 3, 4, 5].copyWithin(0, 3, 4)
+    // [4, 2, 3, 4, 5]
+
+    // -2相当于3号位，-1相当于4号位pP
+    [1, 2, 3, 4, 5].copyWithin(0, -2, -1)
+    // [4, 2, 3, 4, 5]
+
+    // 将3号位复制到0号位
+    [].copyWithin.call({length: 5, 3: 1}, 0, 3)
+    // {0: 1, 3: 1, length: 5}
+
+    // 将2号位到数组结束，复制到0号位
+    let i32a = new Int32Array([1, 2, 3, 4, 5]);
+    i32a.copyWithin(0, 2);
+    // Int32Array [3, 4, 5, 4, 5]
+
+    // 对于没有部署 TypedArray 的 copyWithin 方法的平台
+    // 需要采用下面的写法
+    [].copyWithin.call(new Int32Array([1, 2, 3, 4, 5]), 0, 3, 4);
+    // Int32Array [4, 2, 3, 4, 5]
+  ```
+- 数组实例的 find() 和 findIndex()
+- 数组实例的 fill()
+- 数组实例的 entries()，keys() 和 values()
+- 数组实例的 includes()
+- 数组实例的 flat()，flatMap()
+
+对象扩展
+
+- Object.is()
+- Object.assign()，Object.assign拷贝的属性是有限制的，只拷贝源对象的自身属性（不拷贝继承属性），也不拷贝不可枚举的属性（enumerable: false）
+- Object.getOwnPropertyDescriptors()
+- __proto__属性，Object.setPrototypeOf()，Object.getPrototypeOf()
+- Object.keys()，Object.values()，Object.entries()
+- Object.fromEntries()
+
+Set
+
+- size，Set成员个数
+- add(value)：添加某个值，返回 Set 结构本身。
+- delete(value)：删除某个值，返回一个布尔值，表示删除是否成功。
+- has(value)：返回一个布尔值，表示该值是否为Set的成员。
+- clear()：清除所有成员，没有返回值。
+- keys()：返回键名的遍历器
+- values()：返回键值的遍历器
+- entries()：返回键值对的遍历器
+- forEach()：使用回调函数遍历每个成员
+
+WeakSet
+
+WeakSet 中的对象都是弱引用，即垃圾回收机制不考虑 WeakSet 对该对象的引用，也就是说，如果其他对象都不再引用该对象，那么垃圾回收机制会自动回收该对象所占用的内存，不考虑该对象还存在于 WeakSet 之中。WeakSet 适合临时存放一组对象，以及存放跟对象绑定的信息。只要这些对象在外部消失，它在 WeakSet 里面的引用就会自动消失。由于 WeakSet 内部有多少个成员，取决于垃圾回收机制有没有运行，运行前后很可能成员个数是不一样的，而垃圾回收机制何时运行是不可预测的，因此 ES6 规定 WeakSet 不可遍历。
+
+Map
+
+- size属性返回 Map 结构的成员总数。
+- set(key, value)
+- get(key)
+- has(key)
+- delete(key)
+- clear()
+- keys()：返回键名的遍历器。
+- values()：返回键值的遍历器。
+- entries()：返回所有成员的遍历器。
+- forEach()：遍历 Map 的所有成员。
+
+WeakMap
+
+WeakMap 的键名所引用的对象都是弱引用，即垃圾回收机制不将该引用考虑在内。因此，只要所引用的对象的其他引用都被清除，垃圾回收机制就会释放该对象所占用的内存。也就是说，一旦不再需要，WeakMap 里面的键名对象和所对应的键值对会自动消失，不用手动删除引用。WeakMap 与 Map 在 API 上的区别主要是两个，一是没有遍历操作（即没有keys()、values()和entries()方法），也没有size属性。因为没有办法列出所有键名，某个键名是否存在完全不可预测，跟垃圾回收机制是否运行相关。这一刻可以取到键名，下一刻垃圾回收机制突然运行了，这个键名就没了，为了防止出现不确定性，就统一规定不能取到键名。二是无法清空，即不支持clear方法。因此，WeakMap只有四个方法可用：get()、set()、has()、delete()。
