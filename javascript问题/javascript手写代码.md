@@ -290,6 +290,16 @@ function deepClone (obj) {
   const res = {};
   if (Array.isArray(obj)) res = [];
 
+  if (Object.prototype.toString.call(obj) === '[object String]' || Object.prototype.toString.call(obj) === '[object Number]') {
+    const Ctor = obj.construtor;
+    return new Ctor(obj);
+  }
+
+  if (Object.prototype.toString.call(obj) === '[object Boolean]' || Object.prototype.toString.call(obj) === '[object Date]') {
+    const Ctor = obj.construtor;
+    return new Ctor(+obj);
+  }
+
   for (let i in obj) {
     if (obj.hasOwnProperty(i)) {
       res[i] = deepClone(obj[i]);
@@ -896,4 +906,62 @@ function commafy(num) {
     });
 }
  console.log(commafy(1312567.903000)) //1,312,567.903
+```
+
+### 观察者模式
+
+```js
+class Events {
+  constructor() {
+    this._events = Object.create(null);
+  }
+
+  on (event, fn) {
+    this._events[event] = this._events[event] || [];
+    this._events[event].push(fn);
+  }
+
+  emit (event) {
+    let cbs = this._events[event];
+    if (cbs) {
+      cbs.forEach(cb => {
+        cb.apply(this, [...arguments].slice(1));
+      });
+    }
+  }
+
+  off (event, fn) {
+    if (!arguments.length) {
+      this._events = Object.create(null);
+      return;
+    }
+    let cbs = this._events[event];
+    if (!cbs) return;
+    if (!fn) {
+      this._events[event] = null;
+      return;
+    }
+
+    let cb;
+    let i = cbs.length;
+    while(i--) {
+      cb = cbs[i];
+      if (cb === fn) {
+        cbs.splice(i, 1);
+        break;
+      }
+    }
+  }
+
+  once (event, fn) {
+    const _this = this;
+    function on () {
+      _this.off(event, on);
+      fn.apply(this, arguments);
+    }
+
+    _this.on(event, on);
+  }
+
+}
 ```
