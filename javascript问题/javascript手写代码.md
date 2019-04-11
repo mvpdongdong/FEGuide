@@ -115,7 +115,7 @@ function throttle (fn, wait) {
   let previous = 0, result, context, args, timeout;
 
   const later = function () {
-    previose = Date.now();
+    previous = Date.now();
     timeout = null;
     result = fn.apply(context, args);
   }
@@ -123,9 +123,9 @@ function throttle (fn, wait) {
     context = this;
     args = arguments;
     let now = Date.now();
-    let remaining = wait - (now -previous);
+    let remaining = wait - (now - previous);
     let result;
-    if (remaining <=0 || remaining > wait) {
+    if (remaining <= 0 || remaining > wait) {
       if (timeout) {
         clearTimeout(timeout);
         timeout = null
@@ -498,9 +498,9 @@ const get = (obj, ...args) =>
 const deepFlatten = arr => [].concat(...arr.map(v => Array.isArray(v) ? deepFlatten(v) : v));
 
 function deepFlatten (arr) {
-  return arr.reduce((prev,item) => {
+  return arr.reduce((prev, item) => {
     return prev.concat(Array.isArray(item) ? deepFlatten(item) : item);
-  },[]);
+  }, []);
 }
 
 ```
