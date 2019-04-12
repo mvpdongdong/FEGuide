@@ -285,17 +285,22 @@ function partial (fn) {
 
 ```js
 //乞丐版本
+function isType (obj, type) {
+  if (typeof obj !== 'object') return false;
+  return Object.prototype.toString.call(obj).slice(8, -1) === type;
+}
+
 function deepClone (obj) {
   if (typeof obj !== 'object') return obj;
   const res = {};
   if (Array.isArray(obj)) res = [];
 
-  if (Object.prototype.toString.call(obj) === '[object String]' || Object.prototype.toString.call(obj) === '[object Number]') {
+  if (isType(obj, 'String') || isType(obj, 'Number')) {
     const Ctor = obj.construtor;
     return new Ctor(obj);
   }
 
-  if (Object.prototype.toString.call(obj) === '[object Boolean]' || Object.prototype.toString.call(obj) === '[object Date]') {
+  if (isType(obj, 'Boolean') || isType(obj, 'Date')) {
     const Ctor = obj.construtor;
     return new Ctor(+obj);
   }
@@ -316,25 +321,10 @@ function deepClone (obj) {
 
 基本深克隆完整实现:
 ```js
-const isType = (obj, type) => {
+function isType (obj, type) {
   if (typeof obj !== 'object') return false;
-  const typeString = Object.prototype.toString.call(obj);
-  let flag;
-  switch (type) {
-    case 'Array':
-      flag = typeString === '[object Array]';
-      break;
-    case 'Date':
-      flag = typeString === '[object Date]';
-      break;
-    case 'RegExp':
-      flag = typeString === '[object RegExp]';
-      break;
-    default:
-      flag = false;
-  }
-  return flag;
-};
+  return Object.prototype.toString.call(obj).slice(8, -1) === type;
+}
 
 const getRegExp = re => {
   var flags = '';
@@ -557,10 +547,70 @@ const add = (a, b) => {
 
 ```js
 const merge = array => Array.isArray(array)
-                        ? array.reduce((a, b) => a[a.length - 1] === b ? a
-                        : [...a, b], []) : [];
+                        ? array.reduce((a, b) => a[a.length - 1] === b
+                          ? a
+                          : [...a, b], [])
+                        : [];
 
 console.log(merge([1,1,2,3,2]))//[1, 2, 3, 2]
+```
+
+### 观察者模式
+
+```js
+class Events {
+  constructor() {
+    this._events = Object.create(null);
+  }
+
+  on (event, fn) {
+    this._events[event] = this._events[event] || [];
+    this._events[event].push(fn);
+  }
+
+  emit (event) {
+    let cbs = this._events[event];
+    if (cbs) {
+      cbs.forEach(cb => {
+        cb.apply(this, [...arguments].slice(1));
+      });
+    }
+  }
+
+  off (event, fn) {
+    if (!arguments.length) {
+      this._events = Object.create(null);
+      return;
+    }
+    let cbs = this._events[event];
+    if (!cbs) return;
+    if (!fn) {
+      this._events[event] = null;
+      return;
+    }
+
+    let cb;
+    let i = cbs.length;
+    while(i--) {
+      cb = cbs[i];
+      if (cb === fn) {
+        cbs.splice(i, 1);
+        break;
+      }
+    }
+  }
+
+  once (event, fn) {
+    const _this = this;
+    function on () {
+      _this.off(event, on);
+      fn.apply(this, arguments);
+    }
+
+    _this.on(event, on);
+  }
+
+}
 ```
 
 ### Promise的标准实现
@@ -906,62 +956,4 @@ function commafy(num) {
     });
 }
  console.log(commafy(1312567.903000)) //1,312,567.903
-```
-
-### 观察者模式
-
-```js
-class Events {
-  constructor() {
-    this._events = Object.create(null);
-  }
-
-  on (event, fn) {
-    this._events[event] = this._events[event] || [];
-    this._events[event].push(fn);
-  }
-
-  emit (event) {
-    let cbs = this._events[event];
-    if (cbs) {
-      cbs.forEach(cb => {
-        cb.apply(this, [...arguments].slice(1));
-      });
-    }
-  }
-
-  off (event, fn) {
-    if (!arguments.length) {
-      this._events = Object.create(null);
-      return;
-    }
-    let cbs = this._events[event];
-    if (!cbs) return;
-    if (!fn) {
-      this._events[event] = null;
-      return;
-    }
-
-    let cb;
-    let i = cbs.length;
-    while(i--) {
-      cb = cbs[i];
-      if (cb === fn) {
-        cbs.splice(i, 1);
-        break;
-      }
-    }
-  }
-
-  once (event, fn) {
-    const _this = this;
-    function on () {
-      _this.off(event, on);
-      fn.apply(this, arguments);
-    }
-
-    _this.on(event, on);
-  }
-
-}
 ```
