@@ -826,7 +826,7 @@ Promise.prototype.finally = function (callback) {
   const P = this.construtor;
   return this.then(
     value => P.resolve(callback()).then(() => value),
-    reason => p.resolve(callback()).then(() => {throw reason})
+    reason => P.resolve(callback()).then(() => {throw reason})
   )
 }
 ```
@@ -951,9 +951,75 @@ console.log(lis([0, 3, 4, 17, 2, 8, 6, 10])) // 5
 function commafy(num) {
   return num && num
     .toString()
-    .replace(/(\d)(?=(\d{3})+\.)/g, function($0, $1) {
-        return $1 + ",";
-    });
+    .replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
 }
- console.log(commafy(1312567.903000)) //1,312,567.903
+
+function commafy(number) {
+  number = number.toFixed(2).toString()
+  var dotIndex = number.indexOf('.')
+  var part = number.substring(0, dotIndex)
+  var flag = 0
+  var result = ''
+  for (var i = part.length - 1; i >= 0; i--) {
+    result = part[i] + result
+    if (i !== 0 && ++flag === 3) {
+        result = ',' + result
+        flag = 0
+    }
+  }
+  return result + number.substring(dotIndex)
+}
+
+console.log(commafy(1312567.903000)) //1,312,567.903
+```
+
+### 前端路由实现
+
+hash模式
+
+```js
+class Routers {
+  constructor () {
+    this.routes = {};
+    this.currentUrl = '';
+    this.refresh = this.refresh.bind(this);
+    window.addEventListener('load', this.refresh, false);
+    window.addEventListener('hashchange', this.refresh, false);
+  }
+  routes (path, callback) {
+    this.routes[path] = callback || function () {};
+  }
+  refresh () {
+    this.currentUrl = location.hash.slice(1) || '/';
+    this.routes[this.currentUrl]();
+  }
+}
+```
+history模式
+
+```js
+class Routers {
+  constructor () {
+    this.routes = {};
+    this._bindPopState();
+  }
+  //初始化路由
+  init (path) {
+    history.replaceState({path}, null, path);
+    this.routes[path] && this.routes[path]();
+  }
+  route (path, callback) {
+    this.routes[path] = callback || function () {};
+  }
+  go (path) {
+    history.pushState({path}, null, path);
+    this.routes[path] && this.routes[path]();
+  }
+  _bindPopState () {
+    window.addEventListener('popstate', e => {
+      let path = e.state && e.state.path;
+      this.routes[path] && this.routes[path]();
+    }, false);
+  }
+}
 ```

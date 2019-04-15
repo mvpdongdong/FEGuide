@@ -475,8 +475,17 @@ function find(node, value) {
 
 参考文章：[介绍下 npm 模块安装机制，为什么输入 npm install 就可以自动安装对应的模块](https://github.com/Advanced-Frontend/Daily-Interview-Question/issues/22)
 
-### es5 实现 es6 继承
+### es6 类相比于 es5有什么不同
 
+- class 声明会提升，但不会初始化赋值。Foo 进入暂时性死区，类似于 let、const 声明变量；
+- class 声明内部会启用严格模式；
+- class 的所有方法（包括静态方法和实例方法）都是不可枚举的；
+- class 的所有方法（包括静态方法和实例方法）都没有原型对象 prototype，不能使用 new 来调用。
+- 必须使用 new 调用 class。
+- class 内部无法重写类名。
+
+### es5 实现 es6 继承
+ES5 和 ES6 子类 this 生成顺序不同。ES5 的继承先生成了子类实例，再调用父类的构造函数修饰子类实例，ES6 的继承先生成父类实例，再调用子类的构造函数修饰父类实例。这个差别使得 ES6 可以继承内置对象。
 ```js
 // ES5 实现ES6 extends的例子
 function Parent(name){
