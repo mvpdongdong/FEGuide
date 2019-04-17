@@ -1023,3 +1023,47 @@ class Routers {
   }
 }
 ```
+
+### 跨浏览器事件处理程序
+
+```js
+var EventUtil = {
+  addEventListener: function (el, type, handler) {
+    if (el.addEventListener) {
+      el.addEventListener(type, handler, false);
+    } else if (el.attachEvent) {
+      el.attachEvent('on' + type, handler);
+    } else {
+      el['on' + type] = handler;
+    }
+  },
+  removeEventListener: function (el, type, handler) {
+    if (el.removeEventListener) {
+      el.removeEventListener(type, hander, false);
+    } else if (el.detachEvent) {
+      el.detachEvent('on' + type, handler);
+    } else {
+      el['on' + type] = null;
+    }
+  },
+  getEvent: function (e) {
+    return e ? e : window.event;
+  },
+  getTarget: function (e) {
+    return e.target ? e.target : e.srcElement;
+  },
+  preventDefault: function (e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    } else {
+      e.returnValue = false;
+    }
+  },
+  stopPropagation: function (e) {
+    if (e.stopPropagation) {
+      e.stopPropagation();
+    } else {
+      e.cancelBubble = true;
+    }
+  }
+}

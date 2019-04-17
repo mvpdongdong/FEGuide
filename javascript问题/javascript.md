@@ -403,7 +403,7 @@ SubType.prototype = new SuperType();
 
 组合继承问题：```SubType.prototype = new SuperType();```使SubType.prototype 上也拥有了一个值为 undefined 的 name 属性和 colors 数组。这不是我们的本意，这就是直接使用 new 操作符将父类实例赋值给子类原型对象的副作用。
 
-4. 原型式继承：将子对象的 prototype 指向父对象的 prototype
+4. 原型式继承：将子对象的 __proto__ 指向父对象
 
 ```js
 function object(o) {
@@ -1066,7 +1066,7 @@ alert(GetBytes("你好,as"));
 - 控制台日志(console.log)
 - 移除存在绑定事件的 DOM 元素(IE)
 
-### 在 javascript 中，1 与 Number(1)有什么区别 [易混淆]
+### 在 javascript 中，1 与 new Number(1)有什么区别 [易混淆]
 
 ```js
 var a = Number(1) // 1
@@ -1087,8 +1087,6 @@ typeof new Number(123) // "object"
 (new Number(123)) instanceof Number // true
 123 === new Number(123) // false
 ```
-
-参考地址：[面试题：在 javascript 中，1 与 Number(1)有什么区别](https://segmentfault.com/q/1010000007552319)
 
 ### console.log(!!(new Boolean(false))输出什么 [易混淆]
 
