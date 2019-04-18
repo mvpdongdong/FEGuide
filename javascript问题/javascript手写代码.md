@@ -178,22 +178,25 @@ function debounce (fn, wait, imediate) {
 function debounce (fn, wait, imediate) {
   let timeout = null;
   let callNow = imediate;
+  let result;
 
   return function () {
     let args = arguments;
     let context = this;
 
     if (callNow) {
-      fn.apply(context, args);
+      result = fn.apply(context, args);
       callNow = false;
     }
 
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(function () {
-      fn.apply(context, args);
+      result = fn.apply(context, args);
       timeout = null
       callNow = imediate;
     });
+
+    return result;
   }
 }
 
@@ -726,11 +729,13 @@ Promise.prototype.catch = function (callback) {
 Promise.all = function (promises) {
   const res = [];
   const len = promises.length;
+  let resolvedCounter = 0;
   return new Promise (function (resolve, reject) {
-    promises.forEach(p => {
+    promises.forEach((p, index) => {
       p.then(function (value) {
-        res.push(value);
-        if (res.length === len) {
+        res[index] = value;
+        resolvedCounter ++;
+        if (resolvedCounter === len) {
           resolve(res);
         }
       }, reject)
@@ -955,7 +960,7 @@ function commafy(num) {
 }
 
 function commafy(number) {
-  number = number.toFixed(2).toString()
+  number = number.toString()
   var dotIndex = number.indexOf('.')
   var part = number.substring(0, dotIndex)
   var flag = 0
