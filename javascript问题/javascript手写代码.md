@@ -1072,3 +1072,30 @@ var EventUtil = {
     }
   }
 }
+```
+
+### 实现一个 JSON.stringify
+
+```js
+function jsonStringify(obj) {
+  let type = typeof obj;
+  if (type !== "object") {
+    if (/string|undefined|function/.test(type)) {
+      obj = '"' + obj + '"';
+    }
+    return String(obj);
+  } else {
+    let json = []
+    let isArray = Array.isArray(obj);
+    for (let k in obj) {
+      let v = obj[k];
+      v = jsonStringify(v);
+      json.push((isArray ? "" : '"' + k + '":') + String(v));
+    }
+    return (isArray ? "[" : "{") + String(json) + (isArray ? "]" : "}")
+  }
+}
+console.log(jsonStringify({x : 5}))
+console.log(jsonStringify([1, "false", false]))
+console.log(jsonStringify({b: undefined}))
+```
