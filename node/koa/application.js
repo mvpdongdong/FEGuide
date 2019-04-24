@@ -22,21 +22,53 @@ class Koa extends EventEmitter {
   }
 
   // 引人中间件
-  compose(ctx) {
-    const createAsync = function (fn, next) {
-      return async function () {
-        await fn(ctx, next)
+  // compose(ctx) {
+  //   const createAsync = function (fn, next) {
+  //     return async function () {
+  //       await fn(ctx, next)
+  //     }
+  //   }
+  //   let next = async function() { // 返回 Promise 对象，从而进行后文 fn.then().catch() 调用
+  //     return Promise.resolve()
+  //   }
+
+  //   for (let i = this.middlewares.length - 1; i >= 0; i--) {
+  //     next = createAsync(this.middlewares[i], next)
+  //   }
+
+  //   return next()
+  // }
+
+  // 官方版compose
+  compose (middleware) {
+    if (!Array.isArray(middleware)) throw new TypeError('Middleware stack must be an array!')
+    for (const fn of middleware) {
+      if (typeof fn !== 'function') throw new TypeError('Middleware must be composed of functions!')
+    }
+
+    /**
+     * @param {Object} context
+     * @return {Promise}
+     * @api public
+     */
+
+    return function (context, next) {
+      // last called middleware #
+      let index = -1
+      return dispatch(0)
+      function dispatch (i) {
+        if (i <= index) return Promise.reject(new Error('next() called multiple times'))
+        index = i
+        let fn = middleware[i]
+        if (i === middleware.length) fn = next
+        if (!fn) return Promise.resolve()
+        try {
+          return Promise.resolve(fn(context, dispatch.bind(null, i + 1)));
+        } catch (err) {
+          return Promise.reject(err)
+        }
       }
     }
-    let next = async function() { // 返回 Promise 对象，从而进行后文 fn.then().catch() 调用
-      return Promise.resolve()
-    }
-
-    for (let i = this.middlewares.length - 1; i >= 0; i--) {
-      next = createAsync(this.middlewares[i], next)
-    }
-
-    return next()
   }
 
   callback() {
@@ -44,8 +76,8 @@ class Koa extends EventEmitter {
       const ctx = this.createCtx(req, res)
       const handle = () => this.handleRes(ctx)
       const errHandle = (err) => this.handleErr(err, ctx)
-      const fn = this.compose(ctx)
-      fn.then(handle).catch(errHandle)
+      const fn = this.compose(this.middlewares);
+      return fn(ctx).then(handle).catch(errHandle)
     }
   }
 
