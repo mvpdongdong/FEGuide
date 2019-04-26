@@ -377,3 +377,7 @@ devtoolPlugin 中提供了此功能。因为 dev 模式下所有的 state change
 - 如果权限角色复杂，则需要将用户权限关系数据保存在后端，将后端返回路由通过 addRoutes 动态挂载之前，需要将数据处理一下，将component字段换为真正的路由组件路径，生成真正的路由配置表，再通过 addRoutes 动态挂载。
 
 参考文章：[vue权限路由实现方式总结](https://juejin.im/post/5b5bfd5b6fb9a04fdd7d687a)
+
+### Vue 服务端渲染
+
+参考文章：[Vue服务端渲染实践](https://segmentfault.com/a/1190000018577041)
