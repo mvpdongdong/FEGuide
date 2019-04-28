@@ -22,6 +22,7 @@ const type = (obj) => {
 ```
 
 ### == 隐式转换步骤
+
 ![隐式转换步骤](../imgs/JavaScript==符号运算过程.jpg)
 
 ### instanceof原理
@@ -29,9 +30,11 @@ const type = (obj) => {
 能在实例的 原型对象链 中找到该构造函数的 prototype 属性所指向的 原型对象，就返回true
 
 ### Javascript深入系列
+
 参考文章：[JavaScript深入系列15篇正式完结！](https://juejin.im/post/59278e312f301e006c2e1510)
 
 ### JavaScript专题系列
+
 参考文章：[JavaScript专题系列20篇正式完结！](https://juejin.im/post/59eff1fb6fb9a044ff30a942)
 
 ### JavaScript的作用域概念
@@ -58,9 +61,11 @@ const type = (obj) => {
 参考文章：[JavaScript深入之闭包](https://github.com/mqyqingfeng/Blog/issues/9)
 
 ### JavaScript面向对象深入理解
+
 请参考文章：[JavaScript 面向对象深入理解](https://buptsteve.github.io/blog/2016/03/17/005.js-oo-chapter6/)
 
 ### JavaScript判断this指向
+
 现在我们可以根据优先级来判断函数在某个调用位置应用的是哪条规则。可以按照下面的顺序来进行判断：
 1. 函数是否在new中调用(new绑定)?如果是的话this绑定的是新创建的对象。
 
@@ -204,6 +209,7 @@ var bar = foo()
 参考文章：[当你在浏览器中输入 google.com 并且按下回车之后发生了什么？](https://github.com/skyline75489/what-happens-when-zh_CN)
 
 ### 浏览器工作原理
+
 参考文章：[图解浏览器的基本工作原理](https://zhuanlan.zhihu.com/p/47407398)、[从浏览器多进程到JS单线程，JS运行机制最全面的一次梳理](https://juejin.im/post/5a6547d0f265da3e283a1df7)、[现代浏览器探秘（part3）：渲染](https://juejin.im/post/5c3d870d6fb9a049e12a764c)
 
 ### 全新Chrome Devtools Performance使用指南
@@ -298,6 +304,7 @@ await用法
 参考文章：[JavaScript 遍历、枚举与迭代的骚操作（下篇）](https://juejin.im/post/5c07b764e51d450c457199f9)
 
 ### MVC和MVVM的区别
+
 - Model用于封装和应用程序的业务逻辑相关的数据以及对数据的处理方法；
 - View作为视图层，主要负责数据的展示；
 - Controller定义用户界面对用户输入的响应方式，它连接模型和视图，用于控制应用程序的流程，处理用户的行为和数据上的改变。
@@ -309,6 +316,7 @@ await用法
 参考：[浅析前端开发中的 MVC/MVP/MVVM 模式](https://juejin.im/post/593021272f301e0058273468)
 
 ### 面向对象和非面向对象有什么区别
+
 面向对象三大特性：封装,继承,多态。
 
 面向对象的好处：
@@ -316,23 +324,6 @@ await用法
 - 用面向对象的编程可以把变量当成对象进行操作，让编程思路更加清晰简洁，而且减少了很多冗余变量的出现
 
 参考：[面向对象概念及优点](https://zhuanlan.zhihu.com/p/31157519)
-
-###  get和post分别进行几次数据交互
-get请求过程（2次交互）：
-
-- 浏览器请求tcp连接（第一次握手）
-- 服务器答应进行tcp连接（第二次握手）
-- 浏览器确认，并发送get请求头和数据（第三次握手，这个报文比较小，所以http会在此时进行第一次数据发送）
-- 服务器返回200 ok响应。
-
-post请求过程（3次交互）：
-
-- 浏览器请求tcp连接（第一次握手）
-- 服务器答应进行tcp连接（第二次握手）
-- 浏览器确认，并发送post请求头（第三次握手，这个报文比较小，所以http会在此时进行第一次数据发送）
-服务器返回100 continue响应
-- 浏览器开始发送数据
-- 服务器返回200 ok响应
 
 ### get 和 post 请求之间的区别
 
@@ -395,22 +386,27 @@ post请求过程（3次交互）：
 参考文章：[手摸手，带你用合理的姿势使用webpack4（上）](https://juejin.im/post/5b56909a518825195f499806)、[手摸手，带你用合理的姿势使用webpack4（下）](https://juejin.im/post/5b5d6d6f6fb9a04fea58aabc)
 
 ### babel工作流程
+
 babel工作流程分为三个部分：
 - 输入code，通过babel-parser生成AST(抽象语法树)
 - 根据上一步的AST，通过babel-traverse及配置的babel plugins，根据深度遍历原则对AST进行增删改操作
 - 对上一步的AST，通过babel-generator生成code
 
 ### import、require、export、module.exports 混合使用详解
+
 参考文章：[import、require、export、module.exports 混合使用详解](https://github.com/ShowJoy-com/showjoy-blog/issues/39)
 
 
 ### 有限状态机在 CSS 动画中的应用
+
 参考文章：[有限状态机在 CSS 动画中的应用](https://github.com/dawn-plex/translate/blob/master/articles/css-animations-with-finite-state-machines.md)
 
 ### 有限状态机在react管理状态应用
+
 参考文章：[前端状态管理请三思](https://zhuanlan.zhihu.com/p/30739948)
 
 ### Javascript 高性能动画与页面渲染、硬件加速
+
 开启硬件加速方式：给一个元素添加上了-webkit-transform: translateZ(0);或者-webkit-transform: translate3d(0,0,0);属性，那么你就等于告诉了浏览器用GPU来渲染该层，与一般的CPU渲染相比，提升了速度和性能。
 
 创建独立渲染层方式：
@@ -469,6 +465,7 @@ function find(node, value) {
 参考文章：[recursion should not be difficult](https://medium.freecodecamp.org/learn-recursion-in-10-minutes-e3262ac08a1)
 
 ### 尾递归调用
+
 递归本质上是一种循环操作。纯粹的函数式编程语言没有循环操作命令，所有的循环都用递归实现，这就是为什么尾递归对这些语言极其重要。对于其他支持“尾调用优化”的语言（比如 Lua，ES6），只需要知道循环可以用递归代替，而一旦使用递归，就最好使用尾递归
 参考文章：[尾递归优化](http://es6.ruanyifeng.com/#docs/function#尾调用优化)
 
@@ -486,6 +483,7 @@ function find(node, value) {
 - class 内部无法重写类名。
 
 ### es5 实现 es6 继承
+
 ES5 和 ES6 子类 this 生成顺序不同。ES5 的继承先生成了子类实例，再调用父类的构造函数修饰子类实例，ES6 的继承先生成父类实例，再调用子类的构造函数修饰父类实例。这个差别使得 ES6 可以继承内置对象。
 ```js
 // ES5 实现ES6 extends的例子
