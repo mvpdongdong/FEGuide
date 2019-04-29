@@ -1044,7 +1044,7 @@ var EventUtil = {
   },
   removeEventListener: function (el, type, handler) {
     if (el.removeEventListener) {
-      el.removeEventListener(type, hander, false);
+      el.removeEventListener(type, handler, false);
     } else if (el.detachEvent) {
       el.detachEvent('on' + type, handler);
     } else {

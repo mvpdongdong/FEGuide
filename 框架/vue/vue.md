@@ -38,23 +38,6 @@ mvc 和 mvvm 其实区别并不大。都是一种设计思想。主要就是 mvc
 3. 当对响应式数据做set操作(改变值)时，就会执行属性setter函数，执行```dep.notify()```,触发dep中的Watcher对象执行渲染回调触发更新；
 4. 需要注意的是 vue 是在 nextTick 批量更新，避免每次执行setter就触发更新，Vue 异步执行 DOM 更新。只要观察到数据变化，Vue 将开启一个队列，并缓冲在同一事件循环中发生的所有数据改变。如果同一个 watcher 被多次触发，只会被推入到队列中一次。这种在缓冲时去除重复数据对于避免不必要的计算和 DOM 操作上非常重要。然后，在下一个的事件循环“tick”中，Vue 刷新队列并执行实际 (已去重的) 工作。Vue 在内部尝试对异步队列使用原生的 Promise.then 和 MessageChannel，如果执行环境不支持，会采用 setTimeout(fn, 0) 代替。为了在数据变化之后等待 Vue 完成更新 DOM ，可以在数据变化之后立即使用 Vue.nextTick(callback) 。这样回调函数在 DOM 更新完成后就会调用。
 
-### vue 的双向绑定的原理是什么(常考)
-
-vue.js 是采用数据劫持结合发布者-订阅者模式的方式，通过 Object.defineProperty()来劫持各个属性的 setter，getter，在数据变动时发布消息给订阅者，触发相应的监听回调。
-
-具体步骤：
-第一步：需要 observe 的数据对象进行递归遍历，包括子属性对象的属性，都加上 setter 和 getter 这样的话，给这个对象的某个值赋值，就会触发 setter，那么就能监听到了数据变化
-
-第二步：compile 解析模板指令，将模板中的变量替换成数据，然后初始化渲染页面视图，并将每个指令对应的节点绑定更新函数，添加监听数据的订阅者，一旦数据有变动，收到通知，更新视图
-
-第三步：Watcher 订阅者是 Observer 和 Compile 之间通信的桥梁，主要做的事情是:
-
-- 在自身实例化时往属性订阅器(dep)里面添加自己
-- 自身必须有一个 update()方法
-- 待属性变动 dep.notify()通知时，能调用自身的 update() 方法，并触发 Compile 中绑定的回调，则功成身退。
-
-第四步：MVVM 作为数据绑定的入口，整合 Observer、Compile 和 Watcher 三者，通过 Observer 来监听自己的 model 数据变化，通过 Compile 来解析编译模板指令，最终利用 Watcher 搭起 Observer 和 Compile 之间的通信桥梁，达到数据变化 -> 视图更新；视图交互变化(input) -> 数据 model 变更的双向绑定效果。
-
 ### 请详细说下你对 vue 生命周期的理解？
 
 答：总共分为 8 个阶段创建前/后，载入前/后，更新前/后，销毁前/后。
@@ -381,3 +364,7 @@ devtoolPlugin 中提供了此功能。因为 dev 模式下所有的 state change
 ### Vue 服务端渲染
 
 参考文章：[Vue服务端渲染实践](https://segmentfault.com/a/1190000018577041)
+
+### Vue实战
+
+参考文章：[Vue实战](https://mp.weixin.qq.com/s/mn3bxEUXAw_5lrm7eUX-wA)
